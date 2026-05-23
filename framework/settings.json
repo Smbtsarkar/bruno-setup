@@ -142,7 +142,7 @@
       "Bash(*$(wget *)*)",
 
       "Bash(*source /dev/*)", "Bash(*. /dev/*)",
-      "Bash(*source <(*)", "Bash(*. <(*)",
+      "Bash(*source <*)", "Bash(*. <*)",
 
       "Edit(~/.claude/CLAUDE.md)",
       "Edit(~/.claude/agents/*)",
@@ -188,7 +188,7 @@
       "PowerShell(*IEX *)", "PowerShell(*iex *)",
       "PowerShell(*Invoke-WebRequest *| iex*)",
       "PowerShell(*Invoke-WebRequest *| Invoke-Expression*)",
-      "PowerShell(*New-Object Net.WebClient*).DownloadString*)",
+      "PowerShell(*New-Object Net.WebClient*DownloadString*)",
       "PowerShell(*[Convert]::FromBase64String*| iex*)",
       "PowerShell(*Set-ExecutionPolicy*)",
       "PowerShell(*-EncodedCommand*)",
