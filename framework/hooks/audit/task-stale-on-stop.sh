@@ -29,7 +29,10 @@ TEMP_BASES=(
 TASK_FILE=""
 for base in "${TEMP_BASES[@]}"; do
     [[ -z "$base" ]] && continue
-    candidate=$(find "$base" -name "tasks.json" 2>/dev/null | head -1)
+    [[ ! -d "$base" ]] && continue
+    # `find | head -1` under set -euo pipefail can trip pipefail if find errors
+    # mid-scan — wrap in `|| true` so a partial scan doesn't kill the hook.
+    candidate=$( { find "$base" -name "tasks.json" 2>/dev/null || true; } | head -1)
     if [[ -n "$candidate" ]]; then
         TASK_FILE="$candidate"
         break
