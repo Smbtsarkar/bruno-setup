@@ -22,7 +22,7 @@ SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
 # Look for a tasks file under any common temp location
 TEMP_BASES=(
     "$HOME/AppData/Local/Temp/claude"
-    "$TMPDIR/claude"
+    "${TMPDIR:-}/claude"
     "/tmp/claude"
 )
 
