@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
+  "effortLevel": "high",
+  "alwaysThinkingEnabled": true,
+  "showThinkingSummaries": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+
+  "permissions": {
+    "defaultMode": "auto",
+
+    "allow": [
+      "Bash(git status*)", "Bash(git log*)", "Bash(git diff*)",
+      "Bash(git branch*)", "Bash(git checkout*)", "Bash(git fetch*)",
+      "Bash(git pull*)", "Bash(git add*)", "Bash(git commit*)",
+      "Bash(git push origin feature/*)", "Bash(git push -u origin feature/*)",
+      "Bash(git push origin fix/*)", "Bash(git push -u origin fix/*)",
+      "Bash(git push origin chore/*)", "Bash(git push -u origin chore/*)",
+      "Bash(git push origin docs/*)", "Bash(git push -u origin docs/*)",
+      "Bash(git push origin hotfix/*)", "Bash(git push -u origin hotfix/*)",
+      "Bash(git push origin feat/*)", "Bash(git push -u origin feat/*)",
+      "Bash(git rev-parse*)", "Bash(git config --add*)", "Bash(git config --get*)",
+      "Bash(git stash*)", "Bash(git ls-files*)", "Bash(git show*)",
+      "Bash(git remote*)",
+
+      "Bash(gh pr list*)", "Bash(gh pr view*)", "Bash(gh pr checks*)",
+      "Bash(gh pr diff*)", "Bash(gh pr create*)",
+      "Bash(gh run list*)", "Bash(gh run view*)", "Bash(gh run watch*)",
+      "Bash(gh repo view*)", "Bash(gh api repos/*)",
+      "Bash(gh release view*)", "Bash(gh release list*)",
+      "Bash(gh issue list*)", "Bash(gh issue view*)",
+
+      "Bash(ls*)", "Bash(find*)", "Bash(cat*)", "Bash(head*)", "Bash(tail*)",
+      "Bash(wc*)", "Bash(grep*)", "Bash(rg*)", "Bash(which*)",
+      "Bash(stat*)", "Bash(file*)", "Bash(realpath*)", "Bash(basename*)",
+      "Bash(dirname*)", "Bash(test*)", "Bash([ *)", "Bash([[ *)",
+      "Bash(mkdir*)", "Bash(touch*)", "Bash(cp*)", "Bash(mv*)",
+
+      "Bash(env*)", "Bash(printenv*)", "Bash(id*)", "Bash(whoami*)",
+      "Bash(uname*)", "Bash(date*)", "Bash(echo*)",
+
+      "Read(*)",
+      "Glob(*)",
+      "Grep(*)"
+    ],
+
+    "ask": [
+      "Bash(git push --force*)", "Bash(git push -f*)",
+      "Bash(git push *master*)", "Bash(git push *main*)",
+      "Bash(git reset --hard*)",
+      "Bash(git branch -D*)", "Bash(git branch -d*)",
+      "Bash(git rebase --interactive*)", "Bash(git rebase -i*)",
+      "Bash(git rebase --onto*)",
+      "Bash(git tag *)",
+      "Bash(git push origin v*)",
+      "Bash(git push --tags*)",
+      "Bash(git checkout -- *)", "Bash(git restore *)",
+      "Bash(git clean -f*)", "Bash(git clean -d*)",
+
+      "Bash(gh pr merge *)", "Bash(gh pr close *)",
+      "Bash(gh release create*)", "Bash(gh release delete*)",
+      "Bash(gh repo delete*)", "Bash(gh repo edit*)",
+
+      "Bash(systemctl *)", "Bash(service *)",
+      "Bash(kill *)", "Bash(killall *)",
+      "Bash(curl *)", "Bash(wget *)",
+
+      "Bash(sudo *)"
+    ],
+
+    "deny": [
+      "Bash(*rm -rf *)", "Bash(*rm -fr *)",
+      "Bash(*rm -rf /*)", "Bash(*rm -rf ~*)", "Bash(*rm -rf $HOME*)",
+      "Bash(*dd if=*)", "Bash(*mkfs*)", "Bash(*fdisk*)",
+      "Bash(*chmod -R 000*)", "Bash(*chown -R *)",
+
+      "Bash(*| sh*)", "Bash(*|sh*)",
+      "Bash(*| bash*)", "Bash(*|bash*)",
+      "Bash(*| zsh*)", "Bash(*|zsh*)",
+      "Bash(*| ksh*)", "Bash(*|ksh*)",
+      "Bash(*curl * | sh*)", "Bash(*curl *|sh*)",
+      "Bash(*curl * | bash*)", "Bash(*curl *|bash*)",
+      "Bash(*wget * | sh*)", "Bash(*wget * | bash*)",
+      "Bash(*eval *)",
+      "Bash(*$(curl *)*)",
+      "Bash(*$(wget *)*)",
+
+      "Bash(*source /dev/*)", "Bash(*. /dev/*)",
+      "Bash(*source <(*)", "Bash(*. <(*)",
+
+      "Edit(~/.claude/CLAUDE.md)",
+      "Edit(~/.claude/agents/*)",
+      "Edit(~/.claude/docs/*)",
+      "Edit(~/.claude/settings.json)",
+      "Write(~/.claude/CLAUDE.md)",
+      "Write(~/.claude/agents/*)",
+      "Write(~/.claude/docs/*)",
+      "Write(~/.claude/settings.json)",
+
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(/etc/**/credentials*)",
+      "Read(/etc/**/.credentials*)",
+      "Bash(*git add .env*)",
+      "Bash(*git add */.env*)",
+
+      "Bash(*export ANTHROPIC_API_KEY*)",
+      "Bash(*ANTHROPIC_API_KEY=*)",
+      "Bash(*set ANTHROPIC_API_KEY*)",
+
+      "Bash(*git push origin master*)",
+      "Bash(*git push origin dev*)",
+      "Bash(*git push origin main*)",
+      "Bash(*git push origin HEAD:master*)",
+      "Bash(*git push origin HEAD:dev*)",
+      "Bash(*git push origin HEAD:main*)",
+
+      "Bash(*sudo rm *)",
+      "Bash(*sudo dd *)",
+      "Bash(*sudo chmod -R *)",
+      "Bash(*sudo chown -R *)"
+    ]
+  },
+
+  "allowedHttpHookUrls": [],
+  "httpHookAllowedEnvVars": [],
+  "disableAllHooks": false,
+
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/bruno.sh" }
+        ]
+      }
+    ],
+
+    "SubagentStart": [
+      {
+        "matcher": "coder",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/coder.sh" }]
+      },
+      {
+        "matcher": "reviewer",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/reviewer.sh" }]
+      },
+      {
+        "matcher": "senior-reviewer",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/senior-reviewer.sh" }]
+      },
+      {
+        "matcher": "debugger",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/debugger.sh" }]
+      },
+      {
+        "matcher": "docs",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/docs.sh" }]
+      },
+      {
+        "matcher": "scaffolder",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/scaffolder.sh" }]
+      }
+    ],
+
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/compound-command-check.sh" },
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/project-root-bash.sh" },
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/relative-path-check.sh" },
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/enforcement/pre-commit-installed.sh",
+            "if": "Bash(git commit *)"
+          }
+        ]
+      }
+    ],
+
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/doc-drift-reminder.sh" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/audit/destructive-op-log.sh" }
+        ]
+      }
+    ],
+
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/debugger-auto-invoke.sh" }
+        ]
+      }
+    ],
+
+    "CwdChanged": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/cwd-escape-block.sh" }
+        ]
+      }
+    ],
+
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/audit/task-stale-on-stop.sh" }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
+  "effortLevel": "high",
+  "alwaysThinkingEnabled": true,
+  "showThinkingSummaries": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+
+  "permissions": {
+    "defaultMode": "auto",
+
+    "allow": [
+      "Bash(git status*)", "Bash(git log*)", "Bash(git diff*)",
+      "Bash(git branch*)", "Bash(git checkout*)", "Bash(git fetch*)",
+      "Bash(git pull*)", "Bash(git add*)", "Bash(git commit*)",
+      "Bash(git push origin feature/*)", "Bash(git push -u origin feature/*)",
+      "Bash(git push origin fix/*)", "Bash(git push -u origin fix/*)",
+      "Bash(git push origin chore/*)", "Bash(git push -u origin chore/*)",
+      "Bash(git push origin docs/*)", "Bash(git push -u origin docs/*)",
+      "Bash(git push origin hotfix/*)", "Bash(git push -u origin hotfix/*)",
+      "Bash(git push origin feat/*)", "Bash(git push -u origin feat/*)",
+      "Bash(git rev-parse*)", "Bash(git config --add*)", "Bash(git config --get*)",
+      "Bash(git stash*)", "Bash(git ls-files*)", "Bash(git show*)",
+      "Bash(git remote*)",
+
+      "Bash(gh pr list*)", "Bash(gh pr view*)", "Bash(gh pr checks*)",
+      "Bash(gh pr diff*)", "Bash(gh pr create*)",
+      "Bash(gh run list*)", "Bash(gh run view*)", "Bash(gh run watch*)",
+      "Bash(gh repo view*)", "Bash(gh api repos/*)",
+      "Bash(gh release view*)", "Bash(gh release list*)",
+      "Bash(gh issue list*)", "Bash(gh issue view*)",
+
+      "Bash(ls*)", "Bash(find*)", "Bash(cat*)", "Bash(head*)", "Bash(tail*)",
+      "Bash(wc*)", "Bash(grep*)", "Bash(rg*)", "Bash(which*)",
+      "Bash(stat*)", "Bash(file*)", "Bash(realpath*)", "Bash(basename*)",
+      "Bash(dirname*)", "Bash(test*)", "Bash([ *)", "Bash([[ *)",
+      "Bash(mkdir*)", "Bash(touch*)", "Bash(cp*)", "Bash(mv*)",
+
+      "Bash(env*)", "Bash(printenv*)", "Bash(id*)", "Bash(whoami*)",
+      "Bash(uname*)", "Bash(date*)", "Bash(echo*)",
+
+      "PowerShell(git status*)", "PowerShell(git log*)", "PowerShell(git diff*)",
+      "PowerShell(git branch*)", "PowerShell(git checkout*)", "PowerShell(git fetch*)",
+      "PowerShell(git pull*)", "PowerShell(git add*)", "PowerShell(git commit*)",
+      "PowerShell(git push origin feature/*)", "PowerShell(git push -u origin feature/*)",
+      "PowerShell(git push origin fix/*)", "PowerShell(git push -u origin fix/*)",
+      "PowerShell(git push origin chore/*)", "PowerShell(git push -u origin chore/*)",
+      "PowerShell(git push origin docs/*)", "PowerShell(git push -u origin docs/*)",
+      "PowerShell(git push origin hotfix/*)", "PowerShell(git push -u origin hotfix/*)",
+      "PowerShell(git push origin feat/*)", "PowerShell(git push -u origin feat/*)",
+      "PowerShell(git rev-parse*)", "PowerShell(git config --add*)", "PowerShell(git config --get*)",
+      "PowerShell(git stash*)", "PowerShell(git ls-files*)", "PowerShell(git show*)",
+      "PowerShell(git remote*)",
+
+      "PowerShell(gh pr list*)", "PowerShell(gh pr view*)", "PowerShell(gh pr checks*)",
+      "PowerShell(gh pr diff*)", "PowerShell(gh pr create*)",
+      "PowerShell(gh run list*)", "PowerShell(gh run view*)", "PowerShell(gh run watch*)",
+      "PowerShell(gh repo view*)", "PowerShell(gh api repos/*)",
+      "PowerShell(gh release view*)", "PowerShell(gh release list*)",
+      "PowerShell(gh issue list*)", "PowerShell(gh issue view*)",
+
+      "PowerShell(Get-ChildItem*)", "PowerShell(ls*)", "PowerShell(dir*)",
+      "PowerShell(Get-Content*)", "PowerShell(cat*)", "PowerShell(type*)",
+      "PowerShell(Select-String*)", "PowerShell(Where-Object*)",
+      "PowerShell(Test-Path*)", "PowerShell(Get-Item*)",
+      "PowerShell(Set-Location*)", "PowerShell(cd*)", "PowerShell(Push-Location*)", "PowerShell(Pop-Location*)",
+      "PowerShell(New-Item*)", "PowerShell(mkdir*)",
+      "PowerShell(Copy-Item*)", "PowerShell(cp*)",
+      "PowerShell(Move-Item*)", "PowerShell(mv*)",
+      "PowerShell(Get-Location*)", "PowerShell(pwd*)",
+
+      "PowerShell(Get-ChildItem Env:*)", "PowerShell(echo*)", "PowerShell(Write-Host*)", "PowerShell(Write-Output*)",
+      "PowerShell(Get-Date*)",
+
+      "Read(*)",
+      "Glob(*)",
+      "Grep(*)"
+    ],
+
+    "ask": [
+      "Bash(git push --force*)", "Bash(git push -f*)",
+      "Bash(git push *master*)", "Bash(git push *main*)",
+      "Bash(git reset --hard*)",
+      "Bash(git branch -D*)", "Bash(git branch -d*)",
+      "Bash(git rebase --interactive*)", "Bash(git rebase -i*)",
+      "Bash(git rebase --onto*)",
+      "Bash(git tag *)",
+      "Bash(git push origin v*)",
+      "Bash(git push --tags*)",
+      "Bash(git checkout -- *)", "Bash(git restore *)",
+      "Bash(git clean -f*)", "Bash(git clean -d*)",
+
+      "Bash(gh pr merge *)", "Bash(gh pr close *)",
+      "Bash(gh release create*)", "Bash(gh release delete*)",
+      "Bash(gh repo delete*)", "Bash(gh repo edit*)",
+
+      "Bash(systemctl *)", "Bash(service *)",
+      "Bash(kill *)", "Bash(killall *)",
+      "Bash(curl *)", "Bash(wget *)",
+
+      "Bash(sudo *)",
+
+      "PowerShell(*git push --force*)", "PowerShell(*git push -f*)",
+      "PowerShell(*git push *master*)", "PowerShell(*git push *main*)",
+      "PowerShell(*git reset --hard*)",
+      "PowerShell(*git branch -D*)", "PowerShell(*git branch -d*)",
+      "PowerShell(*git rebase -i*)", "PowerShell(*git rebase --interactive*)",
+      "PowerShell(*git rebase --onto*)",
+      "PowerShell(*git tag *)",
+      "PowerShell(*git push origin v*)",
+      "PowerShell(*git push --tags*)",
+      "PowerShell(*git checkout -- *)", "PowerShell(*git restore *)",
+      "PowerShell(*git clean -f*)", "PowerShell(*git clean -d*)",
+
+      "PowerShell(gh pr merge *)", "PowerShell(gh pr close *)",
+      "PowerShell(gh release create*)", "PowerShell(gh release delete*)",
+      "PowerShell(gh repo delete*)", "PowerShell(gh repo edit*)",
+
+      "PowerShell(Stop-Process*)", "PowerShell(Stop-Service*)",
+      "PowerShell(Restart-Service*)", "PowerShell(Set-Service*)",
+      "PowerShell(Invoke-WebRequest*)", "PowerShell(Invoke-RestMethod*)",
+      "PowerShell(*curl *)", "PowerShell(*wget *)"
+    ],
+
+    "deny": [
+      "Bash(*rm -rf *)", "Bash(*rm -fr *)",
+      "Bash(*rm -rf /*)", "Bash(*rm -rf ~*)", "Bash(*rm -rf $HOME*)",
+      "Bash(*dd if=*)", "Bash(*mkfs*)", "Bash(*fdisk*)",
+      "Bash(*chmod -R 000*)", "Bash(*chown -R *)",
+
+      "Bash(*| sh*)", "Bash(*|sh*)",
+      "Bash(*| bash*)", "Bash(*|bash*)",
+      "Bash(*| zsh*)", "Bash(*|zsh*)",
+      "Bash(*| ksh*)", "Bash(*|ksh*)",
+      "Bash(*curl * | sh*)", "Bash(*curl *|sh*)",
+      "Bash(*curl * | bash*)", "Bash(*curl *|bash*)",
+      "Bash(*wget * | sh*)", "Bash(*wget * | bash*)",
+      "Bash(*eval *)",
+      "Bash(*$(curl *)*)",
+      "Bash(*$(wget *)*)",
+
+      "Bash(*source /dev/*)", "Bash(*. /dev/*)",
+      "Bash(*source <(*)", "Bash(*. <(*)",
+
+      "Edit(~/.claude/CLAUDE.md)",
+      "Edit(~/.claude/agents/*)",
+      "Edit(~/.claude/docs/*)",
+      "Edit(~/.claude/settings.json)",
+      "Write(~/.claude/CLAUDE.md)",
+      "Write(~/.claude/agents/*)",
+      "Write(~/.claude/docs/*)",
+      "Write(~/.claude/settings.json)",
+
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(/etc/**/credentials*)",
+      "Read(/etc/**/.credentials*)",
+      "Bash(*git add .env*)",
+      "Bash(*git add */.env*)",
+
+      "Bash(*export ANTHROPIC_API_KEY*)",
+      "Bash(*ANTHROPIC_API_KEY=*)",
+      "Bash(*set ANTHROPIC_API_KEY*)",
+
+      "Bash(*git push origin master*)",
+      "Bash(*git push origin dev*)",
+      "Bash(*git push origin main*)",
+      "Bash(*git push origin HEAD:master*)",
+      "Bash(*git push origin HEAD:dev*)",
+      "Bash(*git push origin HEAD:main*)",
+
+      "Bash(*sudo rm *)",
+      "Bash(*sudo dd *)",
+      "Bash(*sudo chmod -R *)",
+      "Bash(*sudo chown -R *)",
+
+      "PowerShell(*Remove-Item *-Recurse *-Force*)",
+      "PowerShell(*Remove-Item *-Force *-Recurse*)",
+      "PowerShell(*rm -rf *)", "PowerShell(*rm -fr *)",
+      "PowerShell(*ri -rf *)",
+      "PowerShell(*Format-Volume*)",
+      "PowerShell(*Clear-Disk*)",
+      "PowerShell(*New-Partition*)",
+
+      "PowerShell(*Invoke-Expression*)",
+      "PowerShell(*IEX *)", "PowerShell(*iex *)",
+      "PowerShell(*Invoke-WebRequest *| iex*)",
+      "PowerShell(*Invoke-WebRequest *| Invoke-Expression*)",
+      "PowerShell(*New-Object Net.WebClient*).DownloadString*)",
+      "PowerShell(*[Convert]::FromBase64String*| iex*)",
+      "PowerShell(*Set-ExecutionPolicy*)",
+      "PowerShell(*-EncodedCommand*)",
+
+      "PowerShell(*$env:ANTHROPIC_API_KEY*)",
+      "PowerShell(*Set-Item Env:ANTHROPIC_API_KEY*)",
+      "PowerShell(*[Environment]::SetEnvironmentVariable*ANTHROPIC_API_KEY*)",
+
+      "PowerShell(*git push origin master*)",
+      "PowerShell(*git push origin dev*)",
+      "PowerShell(*git push origin main*)",
+      "PowerShell(*git push origin HEAD:master*)",
+      "PowerShell(*git push origin HEAD:dev*)",
+      "PowerShell(*git push origin HEAD:main*)"
+    ]
+  },
+
+  "allowedHttpHookUrls": [],
+  "httpHookAllowedEnvVars": [],
+  "disableAllHooks": false,
+
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/bruno.sh" }
+        ]
+      }
+    ],
+
+    "SubagentStart": [
+      {
+        "matcher": "coder",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/coder.sh" }]
+      },
+      {
+        "matcher": "reviewer",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/reviewer.sh" }]
+      },
+      {
+        "matcher": "senior-reviewer",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/senior-reviewer.sh" }]
+      },
+      {
+        "matcher": "debugger",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/debugger.sh" }]
+      },
+      {
+        "matcher": "docs",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/docs.sh" }]
+      },
+      {
+        "matcher": "scaffolder",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/scaffolder.sh" }]
+      }
+    ],
+
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/compound-command-check.sh" },
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/project-root-bash.sh" },
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/relative-path-check.sh" },
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/enforcement/pre-commit-installed.sh",
+            "if": "Bash(git commit *)"
+          }
+        ]
+      }
+    ],
+
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/doc-drift-reminder.sh" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/audit/destructive-op-log.sh" }
+        ]
+      }
+    ],
+
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/debugger-auto-invoke.sh" }
+        ]
+      }
+    ],
+
+    "CwdChanged": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/cwd-escape-block.sh" }
+        ]
+      }
+    ],
+
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/audit/task-stale-on-stop.sh" }
+        ]
+      }
+    ]
+  }
+}
