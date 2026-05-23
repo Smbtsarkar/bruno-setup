@@ -4,13 +4,13 @@ set -euo pipefail
 
 cat >/dev/null
 
-# OS detection for shell-discipline (CLAUDE.md §25)
+# OS detection for shell-discipline (CLAUDE.md §16)
 if [[ -n "${OS:-}" && "${OS}" == "Windows_NT" ]] || [[ "${OSTYPE:-}" == "msys"* ]] || [[ "${OSTYPE:-}" == "cygwin"* ]]; then
-    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §25):** OS=Windows. Use the **PowerShell** tool exclusively (NOT Bash). Paths in C:\Users\<user>\... form. Inherits from Bruno session."
+    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §16):** OS=Windows. Use the **PowerShell** tool exclusively (NOT Bash). Paths in C:\Users\<user>\... form. Inherits from Bruno session."
 elif [[ "${OSTYPE:-}" == "darwin"* ]]; then
-    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §25):** OS=macOS. Use the **Bash** tool exclusively. Paths in /Users/<user>/... form."
+    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §16):** OS=macOS. Use the **Bash** tool exclusively. Paths in /Users/<user>/... form."
 else
-    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §25):** OS=Linux. Use the **Bash** tool exclusively. Paths in /home/<user>/... form."
+    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §16):** OS=Linux. Use the **Bash** tool exclusively. Paths in /home/<user>/... form."
 fi
 echo "$_SHELL_REMINDER"
 echo ""
@@ -23,9 +23,9 @@ cat <<'EOF'
 
 - **Run `ruff format --check` explicitly** (or the stack equivalent). `ruff check` alone does NOT cover format violations. Several PRs in past releases slipped because format-check was skipped at the reviewer layer.
 
-- **Comprehensive mode requires adjacent-surface scan** (master CLAUDE.md §8). For the bug or feature this PR addresses, identify the root-cause class (not just the symptom) and scan for adjacent sites that may have the same defect. Output goes into Shape A's `adjacent_surfaces_scanned` field. Empty/skip is NOT allowed — if there's no root-cause class to scan for, say so explicitly.
+- **Comprehensive mode requires adjacent-surface scan** (master CLAUDE.md §6). For the bug or feature this PR addresses, identify the root-cause class (not just the symptom) and scan for adjacent sites that may have the same defect. Output goes into Shape A's `adjacent_surfaces_scanned` field. Empty/skip is NOT allowed — if there's no root-cause class to scan for, say so explicitly.
 
-- **Doc-drift = BLOCKING deviation** (master CLAUDE.md §17). If the PR changes a documented fact (path, command, schema, integration contract), verify the corresponding doc update is in the SAME diff. Missing doc update → blocking deviation, not a follow-up.
+- **Doc-drift = BLOCKING deviation** (master CLAUDE.md §7). If the PR changes a documented fact (path, command, schema, integration contract), verify the corresponding doc update is in the SAME diff. Missing doc update → blocking deviation, not a follow-up.
 
 - **Mock-contract check.** Any new mock of an external client must enforce the protocol contract (connect-before-query, init-before-use). Mocks without contract enforcement are LOOSE END at minimum, BLOCKING if the gap is known to crash production.
 

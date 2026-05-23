@@ -1,6 +1,6 @@
 # Main agent execution policy
 
-Full version of the main-agent execution boundary. Summary lives in master CLAUDE.md §12; this is the reference.
+Full version of the main-agent execution boundary. Summary lives in master CLAUDE.md §11; this is the reference.
 
 ---
 
@@ -28,9 +28,9 @@ The main agent's `Bash` use is restricted to **orchestration plumbing**:
 ### Git / GitHub
 - `git status`, `git log`, `git diff`, `git branch`, `git fetch`, `git checkout`, `git pull`
 - `git add`, `git commit` (docs / config only — see "Docs exception" below)
-- `git push` (feature branches only — `dev`/`master` push is `reviewer`'s job per master CLAUDE.md §6)
+- `git push` (feature branches only — `dev`/`master` push is `reviewer`'s job per master CLAUDE.md §5)
 - `git tag`, `git push origin <tag>` (release-cut only, post senior-reviewer READY-TO-MERGE)
-- `git merge` (with care — see master CLAUDE.md §3 destructive-ops list)
+- `git merge` (with care — see master CLAUDE.md §2 destructive-ops list)
 - `gh pr list`, `gh pr view`, `gh pr checks`, `gh run list`, `gh run view`, `gh run watch`
 - `gh pr create` (only `reviewer` opens PRs normally; main agent opens only for docs-only PRs)
 - `gh pr merge --squash --delete-branch` (after user approval)
@@ -59,7 +59,7 @@ The main agent **may write or edit Markdown documentation directly**, without de
 - `docs/REQUIREMENTS.md`, `docs/DESIGN.md`, `docs/PLAN.md`, `docs/LEARNINGS.md`, `docs/ARCHITECTURE.md`
 - Per-project `CLAUDE.md`
 
-Docs are not "production code" in the §12 sense. The exception exists because:
+Docs are not "production code" in the §11 sense. The exception exists because:
 - Doc-only PRs don't benefit from coder's gate-running discipline (there's nothing to gate).
 - Forcing every doc edit through coder produces overhead without value.
 - Subagents (`docs`) still write docs when it makes sense (e.g. comprehensive README rewrite at PR time).

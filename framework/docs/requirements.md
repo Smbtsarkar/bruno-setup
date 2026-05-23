@@ -11,7 +11,7 @@ The output is a populated `docs/REQUIREMENTS.md` in the project root.
 Confirm the operator has reviewed `~/.claude/docs/interview-checklist.md` (operator-side prep). If they haven't, ask them to skim it first. Reasons:
 
 - Two of the historically expensive mistakes (missing deployment-target spec, missing credential-ownership spec) come from interview gaps where the operator didn't have the answer ready.
-- The pre-interview checklist surfaces those gaps before you waste cycles asking and getting "I don't know" twice (which is an escalation trigger per master CLAUDE.md §8).
+- The pre-interview checklist surfaces those gaps before you waste cycles asking and getting "I don't know" twice (which is an escalation trigger per escalation.md).
 
 If the operator is ready, proceed.
 
@@ -91,7 +91,7 @@ For each phase in the plan (which you'll write next per `~/.claude/docs/plan.md`
 
 - ✅ Unit tests pass
 - ✅ Integration tests pass
-- ✅ **Install-gate passes on a clean container** (cf. master CLAUDE.md §18)
+- ✅ **Install-gate passes on a clean container** (cf. master CLAUDE.md §15 / deployment-gate.md)
 - ✅ README documents the new capability
 - ✅ DESIGN.md updated if the phase added a lifecycle or external integration
 
@@ -140,7 +140,7 @@ Write the populated REQUIREMENTS.md to `docs/REQUIREMENTS.md` with this section 
 <SPDX identifier, full LICENSE file ships separately>
 ```
 
-Adjust section numbering as needed; the **mandatory** sections are §4 (install walkthrough) and §5 (sources of truth). Their absence is a release blocker per master CLAUDE.md §17.
+Adjust section numbering as needed; the **mandatory** sections are §4 (install walkthrough) and §5 (sources of truth). Their absence is a release blocker per master CLAUDE.md §7.
 
 ---
 

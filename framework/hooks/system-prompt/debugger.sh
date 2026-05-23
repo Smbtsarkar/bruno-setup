@@ -4,13 +4,13 @@ set -euo pipefail
 
 cat >/dev/null
 
-# OS detection for shell-discipline (CLAUDE.md §25)
+# OS detection for shell-discipline (CLAUDE.md §16)
 if [[ -n "${OS:-}" && "${OS}" == "Windows_NT" ]] || [[ "${OSTYPE:-}" == "msys"* ]] || [[ "${OSTYPE:-}" == "cygwin"* ]]; then
-    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §25):** OS=Windows. Use the **PowerShell** tool exclusively (NOT Bash). Paths in C:\Users\<user>\... form. Inherits from Bruno session."
+    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §16):** OS=Windows. Use the **PowerShell** tool exclusively (NOT Bash). Paths in C:\Users\<user>\... form. Inherits from Bruno session."
 elif [[ "${OSTYPE:-}" == "darwin"* ]]; then
-    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §25):** OS=macOS. Use the **Bash** tool exclusively. Paths in /Users/<user>/... form."
+    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §16):** OS=macOS. Use the **Bash** tool exclusively. Paths in /Users/<user>/... form."
 else
-    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §25):** OS=Linux. Use the **Bash** tool exclusively. Paths in /home/<user>/... form."
+    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §16):** OS=Linux. Use the **Bash** tool exclusively. Paths in /home/<user>/... form."
 fi
 echo "$_SHELL_REMINDER"
 echo ""
@@ -25,7 +25,7 @@ cat <<'EOF'
 
 - **Consult DESIGN.md §Sources of Truth for any fact-disagreement failure.** If component A reads `X` from one place and component B reads `X` from another, the table is authoritative; the mismatched component is the bug.
 
-- **`DESIGN.md update needed?` is MANDATORY in your return.** For every root cause, decide: yes (which section, what to add/change) or no. Per master CLAUDE.md §17, the fix PR must update DESIGN.md in the same commit.
+- **`DESIGN.md update needed?` is MANDATORY in your return.** For every root cause, decide: yes (which section, what to add/change) or no. Per master CLAUDE.md §7, the fix PR must update DESIGN.md in the same commit.
 
 - **Don't patch symptoms.** If an "obvious" fix doesn't explain WHY the failure happened, keep digging. Patching at the symptom layer means the next adjacent surface will fail the same way (cf. Citadel v1.0.3 → v1.0.4 pattern).
 

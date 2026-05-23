@@ -158,7 +158,7 @@ If `git status` is dirty, continue but **every** uncommitted change becomes a BL
 
 Determine the base branch:
 
-- `claude-setup` repo → base is `master` (single-branch exception per master `CLAUDE.md` §6).
+- `claude-setup` repo → base is `master` (single-branch exception per master `CLAUDE.md` §5).
 - Otherwise → base is `dev`.
 
 Pull the branch diff: `git diff --stat <base>...HEAD` and `git diff <base>...HEAD`. This is "the work" you're reviewing.
@@ -198,8 +198,8 @@ Use `Grep` (it respects `.gitignore`):
 
 - `\b(TODO|FIXME|XXX|HACK|WIP)\b` — every hit is a `file:line` LOOSE END unless it names a real issue tracker ID.
 - Test-skip markers: `@pytest.mark.skip`, `pytest.skip(`, `xfail`, `.skip(`, `xit(`, `describe.skip`, `it.only`, `t.Skip(`, `#[ignore]`.
-- **Default-on `SKIP_*` flags in test fixtures**: a `TEMP_ROOT` (or similar) mode that defaults `SKIP_UV_INSTALL=1`, `SKIP_APT=1`, `SKIP_SYSTEMD=1` hides fragile paths from CI. Per master CLAUDE.md §22, this is a BLOCKER unless explicitly justified.
-- **Mocks without contract enforcement** (per master CLAUDE.md §21): mocks of external clients that don't verify protocol contracts (e.g. connect-before-query). Find via `Grep` for mock definitions; check whether they verify call order.
+- **Default-on `SKIP_*` flags in test fixtures**: a `TEMP_ROOT` (or similar) mode that defaults `SKIP_UV_INSTALL=1`, `SKIP_APT=1`, `SKIP_SYSTEMD=1` hides fragile paths from CI. Per master CLAUDE.md §15 / testing-patterns.md, this is a BLOCKER unless explicitly justified.
+- **Mocks without contract enforcement** (per master CLAUDE.md §15 / testing-patterns.md): mocks of external clients that don't verify protocol contracts (e.g. connect-before-query). Find via `Grep` for mock definitions; check whether they verify call order.
 - Stub bodies: functions whose body is exactly `pass`, `raise NotImplementedError`, `panic!("unimplemented")`, `return undefined`, or a `# stub` return.
 - Debug prints in non-test code: `print(` for Python (excluding `__main__` CLIs), `console.log(` / `console.debug(` for JS/TS, `fmt.Println(` outside `main.go`, `dbg!(` for Rust.
 - Dead code: imports / functions / variables defined but unreferenced (use `ruff check --select F401,F841`, `eslint no-unused-vars`, `go vet`, `cargo check`).
@@ -236,7 +236,7 @@ Report each gate as `PASS` / `FAIL` / `N/A`.
 - For every public function / class / endpoint in the diff, verify a test exists. Untested public surface → GAPS.
 - Look for **assertion-light** tests: tests that call the code but assert only on absence of exceptions or on `is not None`. Cite `file:line` → DEEP-REVIEW NOTES.
 - Check critical paths (DoD-related flows) have **integration** coverage, not just unit. Missing integration coverage on a critical path → GAPS.
-- **Check tests model production**: integration test modes (TEMP_ROOT, MOCK_*, etc.) should run with all `SKIP_*` flags OFF in CI, not silently skipped. Master CLAUDE.md §22.
+- **Check tests model production**: integration test modes (TEMP_ROOT, MOCK_*, etc.) should run with all `SKIP_*` flags OFF in CI, not silently skipped. Master CLAUDE.md §15 / testing-patterns.md.
 
 ### 7. Dependencies & supply chain
 
@@ -278,7 +278,7 @@ This is the gate that catches the v1.0.x install-bug class. **Skip it only if th
 - **LICENSE**: file exists at repo root; SPDX identifier matches `## License` in `docs/REQUIREMENTS.md`. Mismatch or missing → BLOCKER.
 - **ARCHITECTURE.md**: if present, the structure it describes still matches the current tree (`Grep` for the directory / module names it cites). Drift → DEEP-REVIEW NOTES.
 - **DESIGN.md**: every documented lifecycle / sequence / source-of-truth matches actual code (cross-checked in §3 above). Any drift here is BLOCKER, not DEEP-REVIEW NOTE.
-- **REQUIREMENTS.md**: every documented capability, path, env var, schema field, integration contract matches actual code. Drift → **BLOCKER** (master CLAUDE.md §17).
+- **REQUIREMENTS.md**: every documented capability, path, env var, schema field, integration contract matches actual code. Drift → **BLOCKER** (master CLAUDE.md §7).
 - **Per-project CLAUDE.md**: documented run/test/build commands actually exist and work. Drift → BLOCKER.
 - **Public API docstrings**: every exported symbol in the diff has a docstring; the docstring describes inputs / outputs / errors it actually has. Drift → DEEP-REVIEW NOTES.
 

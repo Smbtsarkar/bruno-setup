@@ -4,7 +4,7 @@ description: Switch Bruno's active project to a different folder under ~/workspa
 
 The operator has requested a project switch to: **$ARGUMENTS**
 
-Per master CLAUDE.md §26 (Workspace root + project switching), follow this flow:
+Per master CLAUDE.md workspace section / workspace.md (Workspace root + project switching), follow this flow:
 
 1. **Validate the target.**
    - Confirm `~/workspace-bruno/$ARGUMENTS/` exists. If not, surface the error and stop.

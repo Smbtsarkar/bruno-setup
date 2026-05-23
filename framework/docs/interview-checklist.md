@@ -78,7 +78,7 @@ If the upgrade path is "I'll figure that out later", PLAN.md can't include a Pha
 ## 7. Definition of "done" per phase
 
 - [ ] **What does "Phase N is done" mean concretely?** Beyond "unit tests pass".
-- [ ] **Will install-gate run end of each phase?** (Recommended yes — that's master CLAUDE.md §18.)
+- [ ] **Will install-gate run end of each phase?** (Recommended yes — that's master CLAUDE.md §15 / deployment-gate.md.)
 - [ ] **Will real-VM smoke happen at major-milestone phases?** (Recommended yes for Phase 3/5/7-class milestones.)
 
 "Done = tests pass" is the trap. It's how v1.0.x shipped install bugs. "Done = install works on clean container" is the discipline.

@@ -77,7 +77,7 @@ For every external integration declared in REQUIREMENTS §3, document:
 - Teardown fails: <log and continue, or hard-fail>
 ```
 
-**The "Required before-call state" line is the single most important field**, because that's exactly what mocks must enforce per master CLAUDE.md §21. The Citadel v1.0.9 bug was: ClaudeSDKClient required `connect()` before `query()`; the lifecycle wasn't documented; the mock didn't enforce it; tests passed; production crashed.
+**The "Required before-call state" line is the single most important field**, because that's exactly what mocks must enforce per master CLAUDE.md §15 / testing-patterns.md. The Citadel v1.0.9 bug was: ClaudeSDKClient required `connect()` before `query()`; the lifecycle wasn't documented; the mock didn't enforce it; tests passed; production crashed.
 
 If you can't fill this section for an integration, **you don't yet understand the integration well enough to write code that uses it.** Stop and learn.
 
@@ -196,7 +196,7 @@ Update DESIGN.md (in the same PR as the code change) when:
 - The first-install vs re-install matrix changes.
 - The configuration precedence changes.
 
-Master CLAUDE.md §17 enforces this — any code change that touches a DESIGN.md fact must update DESIGN.md in the same commit, no follow-up-PR exceptions.
+Master CLAUDE.md §7 enforces this — any code change that touches a DESIGN.md fact must update DESIGN.md in the same commit, no follow-up-PR exceptions.
 
 ---
 

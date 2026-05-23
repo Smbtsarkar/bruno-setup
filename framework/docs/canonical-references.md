@@ -1,6 +1,6 @@
 # Canonical external references
 
-Main agent reviews these docs **before any planning** on a non-trivial change, per master CLAUDE.md §2. Don't assume — read.
+Main agent reviews these docs **before any planning** on a non-trivial change, per master CLAUDE.md §1. Don't assume — read.
 
 These are stable upstream references for Claude Code, the Claude Agent SDK, and common integrations. Bookmark by topic, not URL — URLs change; topics don't.
 

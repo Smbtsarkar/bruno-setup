@@ -54,7 +54,7 @@ You edited \`$FILE_PATH\` — this is a doc-tracked file (matched: ${MATCHED_PAT
 
 If this edit changed a documented fact (path, env var, schema field, CLI command,
 integration contract, run/test/build command), update the corresponding canonical doc
-in the SAME commit per master CLAUDE.md §17:
+in the SAME commit per master CLAUDE.md §7:
 
 - **CLI command added/removed/renamed** → \`README.md\` + \`docs/REQUIREMENTS.md\` (CLI surface) + \`docs/PLAN.md\` (relevant PR).
 - **Path / env var / config schema changed** → \`docs/REQUIREMENTS.md\` + \`docs/DESIGN.md\` (sources of truth).

@@ -4,13 +4,13 @@ set -euo pipefail
 
 cat >/dev/null
 
-# OS detection for shell-discipline (CLAUDE.md §25)
+# OS detection for shell-discipline (CLAUDE.md §16)
 if [[ -n "${OS:-}" && "${OS}" == "Windows_NT" ]] || [[ "${OSTYPE:-}" == "msys"* ]] || [[ "${OSTYPE:-}" == "cygwin"* ]]; then
-    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §25):** OS=Windows. Use the **PowerShell** tool exclusively (NOT Bash). Paths in C:\Users\<user>\... form. Inherits from Bruno session."
+    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §16):** OS=Windows. Use the **PowerShell** tool exclusively (NOT Bash). Paths in C:\Users\<user>\... form. Inherits from Bruno session."
 elif [[ "${OSTYPE:-}" == "darwin"* ]]; then
-    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §25):** OS=macOS. Use the **Bash** tool exclusively. Paths in /Users/<user>/... form."
+    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §16):** OS=macOS. Use the **Bash** tool exclusively. Paths in /Users/<user>/... form."
 else
-    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §25):** OS=Linux. Use the **Bash** tool exclusively. Paths in /home/<user>/... form."
+    _SHELL_REMINDER="**Shell discipline (CLAUDE.md §16):** OS=Linux. Use the **Bash** tool exclusively. Paths in /home/<user>/... form."
 fi
 echo "$_SHELL_REMINDER"
 echo ""
@@ -25,7 +25,7 @@ cat <<'EOF'
 
 - **Don't fix code-side drift.** Flag it under `drift_found` and let `coder` handle it via main Claude. Your tool list permits Write/Edit but the contract restricts you to docs files.
 
-- **Don't write to REQUIREMENTS.md / DESIGN.md / PLAN.md.** Those are main agent's responsibility (or coder's per master CLAUDE.md §17). You only READ them and check the code against them.
+- **Don't write to REQUIREMENTS.md / DESIGN.md / PLAN.md.** Those are main agent's responsibility (or coder's per master CLAUDE.md §7). You only READ them and check the code against them.
 
 - **No CONTRIBUTING.md.** Skip it.
 

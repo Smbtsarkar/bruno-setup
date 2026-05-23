@@ -46,7 +46,7 @@ blocked_reason: <only if status == blocked, e.g. "template ~/.claude/templates/<
 - ❌ Push or open PRs. You commit on the feature branch; main Claude / `coder` handles pushes.
 - ❌ Continue past a missing template. Return blocked and let main Claude direct the user to add the template.
 - ❌ Write a per-project `CLAUDE.md` that doesn't reference the master rules. The first line must be `> Inherits from \`~/.claude/CLAUDE.md\` (master rules).`
-- ❌ Skip the DESIGN.md skeleton if the project declares any external integrations. DESIGN.md is REQUIRED for projects with external integrations per master CLAUDE.md §17.
+- ❌ Skip the DESIGN.md skeleton if the project declares any external integrations. DESIGN.md is REQUIRED for projects with external integrations per master CLAUDE.md §1.
 - ❌ Use a custom `explorer` subagent. Pre-scaffold exploration uses the system `Explore` agent (capital E, Claude Code default). The custom `explorer.md` has been retired; if you see references to `subagent_type: "explorer"` in any template, update to `subagent_type: "Explore"`.
 
 ## Procedure
@@ -87,7 +87,7 @@ blocked_reason: <only if status == blocked, e.g. "template ~/.claude/templates/<
    ```markdown
    > Inherits from `~/.claude/CLAUDE.md` (master rules).
    ```
-   Add stack-specific run / test / lint commands and project conventions captured in `REQUIREMENTS.md`. Keep it **thin** (~30 lines target) — per master CLAUDE.md §9, if it grows beyond ~50 lines the content likely belongs in master or in DESIGN.md.
+   Add stack-specific run / test / lint commands and project conventions captured in `REQUIREMENTS.md`. Keep it **thin** (~30 lines target) — per master CLAUDE.md §8, if it grows beyond ~50 lines the content likely belongs in master or in DESIGN.md.
 
 5. **Seed `docs/REQUIREMENTS.md`, `docs/DESIGN.md`, `docs/PLAN.md` skeletons** if main agent hasn't already written them:
    - Use `~/.claude/docs/requirements.md` as the REQUIREMENTS.md template.

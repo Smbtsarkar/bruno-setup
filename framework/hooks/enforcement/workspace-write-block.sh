@@ -3,7 +3,7 @@
 # Hard-blocks Write/Edit operations on paths outside ~/workspace-bruno/.
 #
 # This is the load-bearing constraint for the workspace-bruno blast-radius model
-# (master CLAUDE.md §26). Reads can be broad; writes must stay inside the workspace.
+# (master CLAUDE.md workspace section / workspace.md). Reads can be broad; writes must stay inside the workspace.
 #
 # Exceptions (writes allowed despite being outside workspace):
 #   - None at the framework layer. Project-specific exceptions (e.g. citadel writing
@@ -45,7 +45,7 @@ echo "  Tool path: $FILE_PATH" >&2
 echo "  Resolved:  $RESOLVED" >&2
 echo "  Workspace: $WORKSPACE_RESOLVED" >&2
 echo "" >&2
-echo "Per master CLAUDE.md §26, Write/Edit operations are confined to the Bruno workspace" >&2
+echo "Per master CLAUDE.md workspace section, Write/Edit operations are confined to the Bruno workspace" >&2
 echo "(\$CLAUDE_WORKSPACE_ROOT or ~/workspace-bruno/ by default). This file is outside." >&2
 echo "" >&2
 echo "If this write is operationally necessary (e.g. seeding /etc/<service>/ during install)," >&2

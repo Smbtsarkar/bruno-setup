@@ -64,7 +64,7 @@ Location: `path/to/file.py:LINE` (`function_name`)
 - yes — <which section, what to add/change> | no
 ```
 
-The `DESIGN.md update needed?` field is mandatory. If the root cause is a lifecycle-class failure (init-before-use, connect-before-query, env-loaded-where, source-of-truth conflict), DESIGN.md needs an update so the same class doesn't recur. Per master CLAUDE.md §17, the fix PR must update DESIGN.md in the same commit.
+The `DESIGN.md update needed?` field is mandatory. If the root cause is a lifecycle-class failure (init-before-use, connect-before-query, env-loaded-where, source-of-truth conflict), DESIGN.md needs an update so the same class doesn't recur. Per master CLAUDE.md §7, the fix PR must update DESIGN.md in the same commit.
 
 Main Claude shows this report to the user; on approval, `coder` applies the suggested fix.
 
@@ -109,5 +109,5 @@ Return the report to main Claude. Stop. Do not invoke other agents.
 
 Main agent decisions on the report:
 - Code-fix needed → `coder` receives a delta brief with your suggested-fix block + the DESIGN.md update if any.
-- Design decision needed → main agent escalates to operator per master CLAUDE.md §8 escalation format.
+- Design decision needed → main agent escalates to operator per escalation.md format.
 - Already-fixed-but-needs-verification → main agent invokes `reviewer` for re-verification.

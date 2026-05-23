@@ -123,7 +123,7 @@ The framework uses SIX layers to block patterns like `cd /tmp && rm -rf /` or `c
 | `project-root-bash.sh` | `PreToolUse` | `Bash` | Blocks `cd /<abs>` outside project root |
 | `relative-path-check.sh` | `PreToolUse` | `Bash` | Warns (doesn't block) on absolute paths in args |
 | `pre-commit-installed.sh` | `PreToolUse` | `Bash`, `if: Bash(git commit *)` | Blocks git commit if pre-commit hook not installed but config exists |
-| `workspace-write-block.sh` | `PreToolUse` | `Edit\|Write` | Hard-blocks Write/Edit outside `~/workspace-bruno/` (workspace-bruno blast-radius constraint per CLAUDE.md §26) |
+| `workspace-write-block.sh` | `PreToolUse` | `Edit\|Write` | Hard-blocks Write/Edit outside `~/workspace-bruno/` (workspace-bruno blast-radius constraint per CLAUDE.md workspace section / workspace.md) |
 | `debugger-auto-invoke.sh` | `UserPromptSubmit` | — | Detects pasted error output; injects "spawn debugger" reminder |
 | `switch-project-detect.sh` | `UserPromptSubmit` | — | Detects `/switch-project` and `!switch-project` text patterns; injects validation + approval-gate context |
 | `doc-drift-reminder.sh` | `PostToolUse` | `Edit\|Write` | Reminds to update REQUIREMENTS/DESIGN/README when doc-tracked file is edited |
@@ -166,7 +166,7 @@ Never edit hooks in `~/.claude/hooks/` directly — edit in `docs/proposed-frame
 
 - The framework's `senior-reviewer` previously had a "look for shell-escape patterns" responsibility but no enforcement layer. With these hooks, blocks happen at PreToolUse — senior-reviewer becomes a backstop, not the primary gate.
 - The framework's `coder` previously had "do not fabricate gate passes" as a behavioural rule. With `system-prompt/coder.sh` injection, the rule is reinforced at session start.
-- The "operator-reported error → debugger" rule in master CLAUDE.md §8 had no enforcement. `debugger-auto-invoke.sh` makes it structural.
+- The "operator-reported error → debugger" rule in master CLAUDE.md §6 / pipeline.md had no enforcement. `debugger-auto-invoke.sh` makes it structural.
 
 ---
 

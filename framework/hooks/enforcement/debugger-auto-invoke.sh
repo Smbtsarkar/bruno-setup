@@ -55,7 +55,7 @@ if [[ ${#MATCHED[@]} -gt 0 ]]; then
 The operator's message contains error-output patterns:
 $(printf '  - %s\n' "${MATCHED[@]}")
 
-Per master CLAUDE.md §8 (Debugger auto-invoke), spawn the \`debugger\` subagent with
+Per master CLAUDE.md §6 / pipeline.md (Debugger auto-invoke), spawn the \`debugger\` subagent with
 the log path/fetch command rather than reading and diagnosing inline. Inline diagnosis
 is permitted ONLY when:
   (a) The failure is a 1-line obvious mistake from current conversation context, OR

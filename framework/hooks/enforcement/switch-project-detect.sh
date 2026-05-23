@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # UserPromptSubmit hook
 # Detects /switch-project and !switch-project patterns in the user prompt and
-# injects context for Bruno to run the switch flow per master CLAUDE.md §26.
+# injects context for Bruno to run the switch flow per master CLAUDE.md workspace section / workspace.md.
 #
 # /switch-project — Claude Code CLI slash command; handled natively by the CLI.
 #                   This hook still detects the text form for non-CLI interfaces
@@ -49,7 +49,7 @@ fi
 CURRENT_PROJECT=$(basename "${CLAUDE_PROJECT_DIR:-$(pwd)}")
 
 cat <<EOF
-**Project switch request detected (master CLAUDE.md §26):**
+**Project switch request detected (master CLAUDE.md workspace section / workspace.md):**
 
 - Pattern: \`$(echo "$PROMPT" | grep -oE '[/!]switch-project[[:space:]]+[a-zA-Z0-9_-]+' | head -1)\`
 - Target: \`$TARGET\`
@@ -62,7 +62,7 @@ Validation:
 - Target has CLAUDE.md: $TARGET_HAS_CLAUDE_MD
 - CLAUDE.md inheritance clause: $TARGET_INHERITS
 
-Per §26, you must:
+Per workspace.md, you must:
 1. Surface the above validation to the operator.
 2. Ask the operator to confirm the switch ("Switch from $CURRENT_PROJECT to $TARGET? [y/n]").
 3. On confirmation, \`cd $TARGET_PATH\` and re-read the new project's CLAUDE.md.

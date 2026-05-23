@@ -170,12 +170,12 @@ Cover all categories below. Walk the full branch diff against the base branch. I
 
 7. **Plan-fidelity check.** This is the part automated CI cannot do.
 
-   - **File layout.** `git diff --stat <base>..HEAD` — every brief-listed file must exist; files outside the brief's list need a reason (often fine: `__init__.py`, `conftest.py`, doc files updated per master CLAUDE.md §17).
+   - **File layout.** `git diff --stat <base>..HEAD` — every brief-listed file must exist; files outside the brief's list need a reason (often fine: `__init__.py`, `conftest.py`, doc files updated per master CLAUDE.md §7).
    - **Acceptance criteria.** Each criterion in the brief must be demonstrably met. Point to the file / test that satisfies it. If you can't → blocking deviation.
    - **Tests required.** Each listed test file must exist and pass. Skipped tests (`@pytest.mark.skip`, `xfail`, `it.only`, etc.) count as missing.
-   - **Doc-drift check.** If the PR changes a documented fact (path, command, schema, integration contract), verify the corresponding doc was updated in the SAME diff. Missing doc update → BLOCKING deviation per master CLAUDE.md §17. (No "doc fix in a follow-up PR" exceptions.)
+   - **Doc-drift check.** If the PR changes a documented fact (path, command, schema, integration contract), verify the corresponding doc was updated in the SAME diff. Missing doc update → BLOCKING deviation per master CLAUDE.md §7. (No "doc fix in a follow-up PR" exceptions.)
    - **Pattern scan.** Grep the diff for forbidden patterns from the brief or per-project `CLAUDE.md` (secrets, banned libraries, `shell=True`, `print(` in src, etc.).
-   - **Mock-contract check.** Any new mock of an external client (SDK, HTTP, DB) must enforce the protocol contract, not just the call shape (master CLAUDE.md §21). Mock that only verifies `query()` was called without verifying `connect()` was called first → LOOSE END.
+   - **Mock-contract check.** Any new mock of an external client (SDK, HTTP, DB) must enforce the protocol contract, not just the call shape (master CLAUDE.md §15 / testing-patterns.md). Mock that only verifies `query()` was called without verifying `connect()` was called first → LOOSE END.
    - **Spec adherence.** Pick the top 3–5 files the PR introduces; cross-check each against the `PLAN.md` / `DESIGN.md` sections the brief points to. Type annotations present, async / sync style matching, no hardcoded paths that should be config.
 
 8. **Categorize severities:**
@@ -187,7 +187,7 @@ Cover all categories below. Walk the full branch diff against the base branch. I
    - All local checks pass + e2e exercise passes + adjacent-surface scan complete + zero blocking deviations → Shape A. Open the PR.
    - Anything else → Shape B. Return without opening.
 
-10. **Open the PR (Shape A path).** Use the body template from master `CLAUDE.md` §6 — including the **mandatory `### How to verify (operator-runs-this)`** section with concrete pasteable commands:
+10. **Open the PR (Shape A path).** Use the body template from `~/.claude/docs/pr-template.md` (also referenced from master `CLAUDE.md` §5) — including the **mandatory `### How to verify (operator-runs-this)`** section with concrete pasteable commands:
     ```bash
     gh pr create \
       --base "$(gh pr view --json baseRefName -q .baseRefName 2>/dev/null || echo dev)" \

@@ -48,7 +48,7 @@ if [[ "$NEW_CWD_R" == "$WORKSPACE_R" || "$NEW_CWD_R" == "$WORKSPACE_R/"* ]]; the
     echo "  To:   $NEW_CWD_R" >&2
     echo "" >&2
     echo "Both are inside the workspace ($WORKSPACE_R) but are DIFFERENT projects." >&2
-    echo "Project switching requires the explicit /switch-project flow (master CLAUDE.md §26):" >&2
+    echo "Project switching requires the explicit /switch-project flow (master CLAUDE.md workspace section / workspace.md):" >&2
     echo "" >&2
     echo "  /switch-project <name>    (Claude Code CLI slash command)" >&2
     echo "  !switch-project <name>    (text pattern, works in any channel)" >&2

@@ -90,7 +90,7 @@ Every PR has every field. Missing fields are signals that the planning is incomp
 
 ## 3. Phase gate definition
 
-End of each phase = **install works on clean container/VM**, not just unit tests green. This is master CLAUDE.md §18.
+End of each phase = **install works on clean container/VM**, not just unit tests green. See master CLAUDE.md §15 / deployment-gate.md.
 
 - Per-PR: `scripts/dev/install-gate.sh` (or stack equivalent) runs in CI as part of the PR's `Live install dry-run` job. Must pass before merge.
 - Per major-milestone phase: a real-VM smoke test using the documented install flow from README. Operator runs this (or CI runs a longer-form Docker job).
@@ -133,7 +133,7 @@ Port from: <copy>
 Notes for this PR specifically: <any delta context the coder needs, e.g. "the prior PR introduced X, this PR uses it differently because Y">
 ```
 
-Default cap: 40 lines (master CLAUDE.md §20). If the brief exceeds 40 lines, the missing context belongs in DESIGN, not the brief.
+Default cap: 40 lines (master CLAUDE.md §6 brief discipline). If the brief exceeds 40 lines, the missing context belongs in DESIGN, not the brief.
 
 ---
 

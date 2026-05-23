@@ -44,7 +44,7 @@ For each drift entry, cite the **authoritative doc source** (which doc said what
 - ❌ Document features that aren't implemented. If the code doesn't do X, the README doesn't say it does.
 - ❌ Fix code-side drift. Flag it under `drift_found` and let `coder` handle it.
 - ❌ Run the project's test / build commands. `reviewer` does that.
-- ❌ Write to REQUIREMENTS.md / DESIGN.md / PLAN.md. Those are main agent's responsibility (or coder, when updating per master CLAUDE.md §17). You only *read* them and check the code against them.
+- ❌ Write to REQUIREMENTS.md / DESIGN.md / PLAN.md. Those are main agent's responsibility (or coder, when updating per master CLAUDE.md §7). You only *read* them and check the code against them.
 
 ## What you own
 
@@ -67,7 +67,7 @@ For each drift entry, cite the **authoritative doc source** (which doc said what
    - **CLI changes**: does README's CLI command table still match? Mismatch → `drift_found`.
    - **Command changes** (test/lint/build/run): does per-project CLAUDE.md still match? Mismatch → `drift_found`.
 
-   Per master CLAUDE.md §17, the same PR that changes a documented fact should already include the doc update — but if `coder` missed any, you catch them here. (Main agent's pre-merge scope check is a backstop.)
+   Per master CLAUDE.md §7, the same PR that changes a documented fact should already include the doc update — but if `coder` missed any, you catch them here. (Main agent's pre-merge scope check is a backstop.)
 
 3. **README** — top: one-sentence description matching REQUIREMENTS.md Summary. Sections: Install, Quick start (copy-pasteable), Usage, Configuration, Examples, License. No build badges unless CI actually exists.
 

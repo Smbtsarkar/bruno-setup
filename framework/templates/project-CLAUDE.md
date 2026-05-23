@@ -47,4 +47,4 @@
 ## Notes
 
 - Keep this file under ~50 lines. Master rules cover the general patterns; this file is project-specific overrides only.
-- Doc maintenance is mandatory in every PR (master CLAUDE.md §17) — no "doc fix in a follow-up PR" exceptions.
+- Doc maintenance is mandatory in every PR (master CLAUDE.md §7) — no "doc fix in a follow-up PR" exceptions.
