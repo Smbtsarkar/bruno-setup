@@ -4,6 +4,7 @@
   "effortLevel": "high",
   "alwaysThinkingEnabled": true,
   "showThinkingSummaries": true,
+  "theme": "custom:midnight",
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,

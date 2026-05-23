@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# sync.sh — install bruno-setup/framework/ into ~/.claude/
+# sync.sh — install bruno-setup/framework/ into ~/.claude/, plus selected
+#           user-home dotfiles (currently: .tmux.conf).
 #
 # Usage:
 #   bash scripts/sync.sh           # backup existing + sync
@@ -30,17 +31,19 @@ for cmd in rsync; do
     fi
 done
 
-# --- Backup existing ~/.claude/ (unless NO_BACKUP=1) ---
+# --- Backup existing ~/.claude/ + user-home dotfiles (unless NO_BACKUP=1) ---
 TS=$(date +%Y%m%d-%H%M%S)
 BACKUP_FILES=(
     "$DEST/CLAUDE.md"
     "$DEST/settings.json"
+    "$HOME/.tmux.conf"
 )
 BACKUP_DIRS=(
     "$DEST/agents"
     "$DEST/docs"
     "$DEST/templates"
     "$DEST/hooks"
+    "$DEST/themes"
 )
 
 if [[ -z "${NO_BACKUP:-}" ]]; then
@@ -92,6 +95,19 @@ for d in agents docs hooks templates commands; do
     fi
 done
 
+# themes/ — sync WITHOUT --delete. Framework ships a default set (e.g. midnight),
+# but operators can drop their own theme JSONs in $DEST/themes/ — preserve those.
+if [[ -d "$SRC/themes" ]]; then
+    mkdir -p "$DEST/themes"
+    rsync "${RSYNC_OPTS[@]}" "$SRC/themes/" "$DEST/themes/"
+fi
+
+# User-home dotfiles — currently just .tmux.conf. Add more here as needed.
+if [[ -f "$SRC/.tmux.conf" ]]; then
+    rsync "${RSYNC_OPTS[@]}" "$SRC/.tmux.conf" "$HOME/.tmux.conf"
+    echo "[INFO] Synced: $SRC/.tmux.conf -> $HOME/.tmux.conf"
+fi
+
 if [[ -z "${DRY_RUN:-}" ]]; then
     # Also place base.json under templates/_settings/ (scaffolder expects it there)
     mkdir -p "$DEST/templates/_settings"
@@ -112,6 +128,20 @@ echo "[INFO] Verification:"
 [[ -d "$DEST/docs" ]] && echo "  OK $DEST/docs/ ($(ls "$DEST/docs" 2>/dev/null | wc -l) files)" || echo "  MISSING: $DEST/docs/"
 [[ -d "$DEST/templates" ]] && echo "  OK $DEST/templates/" || echo "  MISSING: $DEST/templates/"
 [[ -d "$DEST/hooks" ]] && echo "  OK $DEST/hooks/ ($(find "$DEST/hooks" -name '*.sh' 2>/dev/null | wc -l) scripts)" || echo "  MISSING: $DEST/hooks/"
+[[ -d "$DEST/themes" ]] && echo "  OK $DEST/themes/ ($(ls "$DEST/themes" 2>/dev/null | wc -l) themes)" || echo "  MISSING: $DEST/themes/"
+[[ -f "$HOME/.tmux.conf" ]] && echo "  OK $HOME/.tmux.conf" || echo "  MISSING: $HOME/.tmux.conf"
+
+# Validate themes parse as JSON
+if command -v node >/dev/null 2>&1 && [[ -d "$DEST/themes" ]]; then
+    THEME_FAILS=0
+    while IFS= read -r tf; do
+        if ! node -e "JSON.parse(require('fs').readFileSync('$tf','utf8'))" 2>/dev/null; then
+            echo "  FAIL $tf did not parse as JSON"
+            THEME_FAILS=$((THEME_FAILS + 1))
+        fi
+    done < <(find "$DEST/themes" -maxdepth 1 -name '*.json' 2>/dev/null)
+    [[ "$THEME_FAILS" -eq 0 ]] && echo "  OK All theme JSON files parse"
+fi
 
 # Validate JSON files parse
 if command -v node >/dev/null 2>&1; then
