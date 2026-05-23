@@ -19,7 +19,6 @@ FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 DOC_TRACKED_PATTERNS=(
     'deploy/setup\.sh$'
     'deploy/.*\.service$'
-    'deploy/citadel\.service$'
     'pyproject\.toml$'
     'package\.json$'
     'Cargo\.toml$'
@@ -31,7 +30,6 @@ DOC_TRACKED_PATTERNS=(
     '/__init__\.py$'                   # version strings live here
     '\.env\.example$'
     '\.env\.template$'
-    '/citadel\.env\.example$'
     '/config\.example\.toml$'
     'alembic/versions/.*\.py$'
     '/migrations/.*\.py$'

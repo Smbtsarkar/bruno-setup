@@ -2,13 +2,13 @@
 
 For the **operator** (the user, not the agent) to review **before** the requirements interview begins. Surfaces the prep work that — if missing — causes interview waste and downstream bugs.
 
-If you can't answer most of these going into the interview, that's fine — note them as TBD, and we'll surface them as open questions in PLAN.md. But every TBD here is a known risk for an interview gap that produces a v1.0.x-class bug pile later.
+If you can't answer most of these going into the interview, that's fine — note them as TBD, and we'll surface them as open questions in PLAN.md. But every TBD here is a known risk for an interview gap that produces a release-time bug pile later.
 
 ---
 
 ## 1. Project name and scope
 
-- [ ] **Project name.** A repo-able name (`my-project`, not "thing I want to build"). Will become `~/Projects/<name>`.
+- [ ] **Project name.** A repo-able name (`my-project`, not "thing I want to build"). Will become `~/workspace-bruno/<name>`.
 - [ ] **One-sentence pitch.** "This project is ___ that lets ___ do ___." If you can't say it in one sentence, the scope is too big.
 - [ ] **Three things you explicitly considered and CUT from v1.** Forces you to articulate the boundary.
 
@@ -21,7 +21,7 @@ If you can't answer most of these going into the interview, that's fine — note
 - [ ] **Container runtime (if any).** Docker? Podman? Kubernetes? None?
 - [ ] **Will the install ever happen on a clean VM, or always on a maintained host?** Determines whether `setup.sh` needs to be fully bootstrapping or can assume curated state.
 
-If this section is "I'm not sure, I'll figure it out", DESIGN.md cannot be written and install-gate cannot be configured. That's the Citadel-pattern install-bug substrate.
+If this section is "I'm not sure, I'll figure it out", DESIGN.md cannot be written and install-gate cannot be configured. That's the substrate for operator-discovered install bugs.
 
 ---
 
@@ -49,7 +49,7 @@ For **each** external system the project will integrate with (Discord, Slack, Go
 
 If any field is "I don't know yet" — that's an open question. **It must be resolved before DESIGN.md can include this integration**, because lifecycle and source-of-truth declarations depend on it.
 
-Citadel v1.0.6 (Google OAuth dead-end) was 100% a "we didn't define who produces token.json" gap that this checklist would have caught.
+"We didn't define who produces the token / credential file" is a classic gap this checklist exists to catch — undefined credential ownership consistently surfaces as a release-blocking install bug.
 
 ---
 
@@ -71,7 +71,7 @@ This walkthrough becomes REQUIREMENTS.md §"Operator Install & First-Run Experie
 - [ ] **Is there a rollback story?** What happens if v1.5 → v1.6 breaks?
 - [ ] **Does upgrade involve schema migrations?** Who runs them?
 
-If the upgrade path is "I'll figure that out later", PLAN.md can't include a Phase 7 (release + update) — or it will include one but it'll be wrong (cf. Citadel's `/update` originally pulling from `dev` instead of `master`).
+If the upgrade path is "I'll figure that out later", PLAN.md can't include a release-and-update phase — or it will include one but it'll be wrong (e.g. an `/update` command that pulls from the wrong branch).
 
 ---
 
@@ -81,7 +81,7 @@ If the upgrade path is "I'll figure that out later", PLAN.md can't include a Pha
 - [ ] **Will install-gate run end of each phase?** (Recommended yes — that's master CLAUDE.md §15 / deployment-gate.md.)
 - [ ] **Will real-VM smoke happen at major-milestone phases?** (Recommended yes for Phase 3/5/7-class milestones.)
 
-"Done = tests pass" is the trap. It's how v1.0.x shipped install bugs. "Done = install works on clean container" is the discipline.
+"Done = tests pass" is the trap — it lets install bugs ship to operators. "Done = install works on clean container" is the discipline.
 
 ---
 
@@ -89,7 +89,7 @@ If the upgrade path is "I'll figure that out later", PLAN.md can't include a Pha
 
 - [ ] **Is there an existing codebase to port from?** Even partial overlap (similar bot framework, similar deployment shape, similar config loader) is high-leverage. Cite the repo path; the planner will use it as the "Port from" pointer per PLAN.md template.
 
-Citadel's 31-PR-in-one-day build was 90% because deepclaw existed as a port-from reference. Without it, the same work would have been 5-10× longer. If you have a reference, use it.
+A reference codebase to port from is one of the highest-leverage accelerators available. Cite the repo path; the planner uses it as the "Port from" pointer per PLAN.md template.
 
 ---
 
@@ -110,4 +110,4 @@ If you have opinions on these, share them; if not, the planner picks sensible de
 
 Bring this checklist to the interview. Anything you couldn't fill in beforehand becomes the first round of interview questions — and that's fine, that's exactly what the interview is for.
 
-What's NOT fine is starting the interview without having thought about this at all. That's how Citadel shipped a setup.sh that nobody had actually walked through.
+What's NOT fine is starting the interview without having thought about this at all. That's how projects ship a `setup.sh` that nobody has actually walked through.

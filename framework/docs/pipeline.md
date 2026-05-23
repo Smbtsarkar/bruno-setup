@@ -92,7 +92,7 @@ Why: the previous pattern of main agent reading 30 lines of pasted journalctl in
 
 When invoking debugger:
 
-- Pass the log path or log-fetching command (e.g. `journalctl -u citadel.service -n 200 --no-pager`).
+- Pass the log path or log-fetching command (e.g. `journalctl -u <service>.service -n 200 --no-pager`).
 - Pass the failure summary in one line.
 - Optionally pass a reproduction step.
 - Debugger fetches and reads the logs itself.

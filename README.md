@@ -4,7 +4,7 @@ Canonical source for the Bruno agent framework's `~/.claude/` files.
 
 This repo holds the master `CLAUDE.md`, six subagent definitions, playbooks, settings.json, and hooks that together implement the Chief Engineer persona Bruno uses to operate any project. The `framework/` subdirectory mirrors `~/.claude/` exactly; a sync script rsyncs it into place.
 
-The framework was derived from the Citadel v1.0.0 → v1.0.8 release retrospective. See `framework/CLAUDE.md` for the full rule set; `framework/docs/` for the requirements/design/plan playbooks; `framework/hooks/README.md` for the enforcement-layer architecture.
+See `framework/CLAUDE.md` for the full rule set; `framework/docs/` for the requirements/design/plan playbooks; `framework/hooks/README.md` for the enforcement-layer architecture.
 
 ---
 
@@ -12,10 +12,10 @@ The framework was derived from the Citadel v1.0.0 → v1.0.8 release retrospecti
 
 ```bash
 # Clone (once)
-git clone https://github.com/Smbtsarkar/bruno-setup.git ~/Projects/bruno-setup
+git clone https://github.com/Smbtsarkar/bruno-setup.git ~/workspace-bruno/bruno-setup
 
 # Sync into ~/.claude/
-cd ~/Projects/bruno-setup
+cd ~/workspace-bruno/bruno-setup
 bash scripts/sync.sh
 ```
 
@@ -37,7 +37,7 @@ Restart any open Claude Code sessions to pick up the new settings + hooks.
 ## Update
 
 ```bash
-cd ~/Projects/bruno-setup
+cd ~/workspace-bruno/bruno-setup
 git pull origin master
 bash scripts/sync.sh
 ```
@@ -51,7 +51,7 @@ Same sync runs; same backup behaviour.
 - **bash** (4.0+) — required for hook scripts.
 - **rsync** — required for `scripts/sync.sh`. Pre-installed on macOS and most Linux distros. On Windows, comes with Git for Windows (git-bash).
 - **jq** — required by enforcement hooks to parse JSON from stdin. Install via `brew install jq` / `apt-get install jq` / `winget install jq`.
-- **shellcheck** (optional, for development) — used by the citadel repo's pre-commit hook on the hook scripts here.
+- **shellcheck** (optional, for development) — useful if a project pre-commit lints the hook scripts.
 
 ---
 
@@ -59,9 +59,9 @@ Same sync runs; same backup behaviour.
 
 | Subdir | Purpose | See |
 |--------|---------|-----|
-| `framework/CLAUDE.md` | Master Bruno persona + 26 rule sections | (the file) |
+| `framework/CLAUDE.md` | Master Bruno persona + rule sections | (the file) |
 | `framework/agents/` | 6 subagent definitions with frontmatter (model, effort, tools) | (the files) |
-| `framework/docs/` | Interview, planning, and DESIGN.md playbooks; execution policy; canonical-references | `framework/docs/requirements.md` etc. |
+| `framework/docs/` | Interview, planning, and DESIGN.md playbooks; execution policy; pipeline; subagent contracts; escalation; testing patterns; install walkthrough; deployment gate; workspace; pr-template; who-does-what; canonical-references | `framework/docs/` |
 | `framework/templates/` | `project-CLAUDE.md` template for new projects + `_settings/` for scaffolder merge | `framework/templates/project-CLAUDE.md` |
 | `framework/settings.json` | Permissions (Bash + PowerShell mirrors), hooks, thinking levels | `framework/settings-README.md` |
 | `framework/hooks/system-prompt/` | SessionStart + per-agent SubagentStart context injection | `framework/hooks/README.md` |
@@ -72,35 +72,33 @@ Same sync runs; same backup behaviour.
 
 ## Workspace conventions
 
-Bruno operates under a single workspace root: **`~/workspace-bruno/`** (override via env var `CLAUDE_WORKSPACE_ROOT`). All projects live directly under it — `~/workspace-bruno/citadel/`, `~/workspace-bruno/garuda/`, etc.
+Bruno operates under a single workspace root: **`~/workspace-bruno/`** (override via env var `CLAUDE_WORKSPACE_ROOT`). All projects live directly under it — `~/workspace-bruno/<project>/`.
 
-The framework restricts Bruno's **Write/Edit** operations to this workspace (load-bearing blast-radius constraint per `framework/CLAUDE.md` §26). **Read/Glob/Grep** remain broad (system inspection still works) with audit logging on cross-workspace reads. **Bash execution** stays permitted via the existing allow patterns; `cd` between projects is gated by the `/switch-project` flow.
+The framework restricts Bruno's **Write/Edit** operations to this workspace (load-bearing blast-radius constraint per `framework/CLAUDE.md` workspace section / `framework/docs/workspace.md`). **Read/Glob/Grep** remain broad (system inspection still works) with audit logging on cross-workspace reads. **Bash execution** stays permitted via the existing allow patterns; `cd` between projects is gated by the `/switch-project` flow.
 
 ### Project switching
 
 Bruno cannot switch its active project autonomously. Two equivalent operator-driven flows:
 
 - **`/switch-project <name>`** — Claude Code CLI slash command. See `framework/commands/switch-project.md`.
-- **`!switch-project <name>`** — Text-pattern form for non-CLI interfaces (Discord channels via Citadel-style harness, etc.). Detected by `framework/hooks/enforcement/switch-project-detect.sh`.
+- **`!switch-project <name>`** — Text-pattern form for non-CLI interfaces (any channel routed through a harness that forwards prompts). Detected by `framework/hooks/enforcement/switch-project-detect.sh`.
 
 Both surface the same Bruno-handled flow: validate the target, ask the operator to confirm, then `cd` on approval.
 
-### Migration from `~/Projects/`
+### Setting up the workspace
 
 ```bash
 mkdir -p ~/workspace-bruno
-mv ~/Projects/* ~/workspace-bruno/
-# Optional: symlink during transition
-ln -s ~/workspace-bruno/citadel ~/Projects/citadel
+# Then either clone projects directly into ~/workspace-bruno/<name>
+# or override the default root if you want a different location:
+export CLAUDE_WORKSPACE_ROOT=/path/to/your/root
 ```
-
-Or override the default if you want a different root: `export CLAUDE_WORKSPACE_ROOT=/path/to/your/root`.
 
 ---
 
 ## Shell discipline (cross-platform)
 
-The framework is designed to work on Linux, macOS, and Windows. The shell-discipline rule (`framework/CLAUDE.md` §25) says:
+The framework is designed to work on Linux, macOS, and Windows. The shell-discipline rule (`framework/CLAUDE.md` §16) says:
 
 - **On Windows:** agents use the PowerShell tool exclusively; paths in `C:\Users\<user>\...` form.
 - **On Linux / macOS:** agents use the Bash tool exclusively; paths in `/home/<user>/...` (or `/Users/<user>/...`) form.
@@ -111,7 +109,7 @@ The framework is designed to work on Linux, macOS, and Windows. The shell-discip
 
 ## Single-branch model
 
-This repo follows the `claude-setup` single-branch exception (per `framework/CLAUDE.md` §6) — master only, direct commits, no feature branches, no PRs, no release ceremony. Reason: framework infra, single operator, no public consumers requiring PR-style review history.
+This repo follows the single-branch exception (per `framework/CLAUDE.md` §5) — master only, direct commits, no feature branches, no PRs, no release ceremony. Reason: framework infra, single operator, no public consumers requiring PR-style review history.
 
 To make a change:
 1. Edit under `framework/`.
@@ -119,9 +117,3 @@ To make a change:
 3. `git push origin master`.
 4. `bash scripts/sync.sh`.
 5. Restart Claude Code.
-
----
-
-## Provenance
-
-The framework was derived from the Citadel project's v1.0.0 → v1.0.8 retrospective (see `citadel/docs/LEARNINGS.md`). Originally staged in `citadel/docs/proposed-framework/`; promoted to this dedicated repository for clean install/update flow once stable.

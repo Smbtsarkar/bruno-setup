@@ -142,7 +142,7 @@ The framework uses SIX layers to block patterns like `cd /tmp && rm -rf /` or `c
 
 Project-specific hooks go in `<project>/.claude/hooks/`. The project's `.claude/settings.json` references them. Per the framework's union semantics, project hooks **add** to the base set — they don't replace it.
 
-For citadel specifically: no project-level hooks today. Everything the framework enforces is in `~/.claude/hooks/`. If citadel needs a citadel-specific hook (e.g. "block any change to `deploy/citadel.service` that doesn't update DESIGN.md §systemd"), add it under `citadel/.claude/hooks/` and reference from `citadel/.claude/settings.json` `hooks` block.
+Example: if a project needs a hook like "block any change to `deploy/<project>.service` that doesn't update DESIGN.md §systemd", add it under `<project>/.claude/hooks/` and reference it from `<project>/.claude/settings.json`'s `hooks` block. The framework hooks here stay project-agnostic; project-specific allowlists, patterns, or operational paths live with the project.
 
 ---
 
@@ -172,7 +172,7 @@ Never edit hooks in `~/.claude/hooks/` directly — edit in `docs/proposed-frame
 
 ## See also
 
-- `../settings/README.md` — settings.json layer (permissions, model defaults, hook config)
-- `../CLAUDE.md` §4, §8, §17, §20, §21 — the framework rules these hooks enforce
+- `../settings-README.md` — settings.json layer (permissions, model defaults, hook config)
+- `../CLAUDE.md` §2, §3, §6, §7 — the framework rules these hooks enforce
 - `../docs/execution-policy.md` — main-agent execution boundary
 - Claude Code hooks reference: https://code.claude.com/docs/en/hooks.md

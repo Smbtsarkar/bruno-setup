@@ -13,7 +13,7 @@ The main agent (Bruno) **never executes project code**. Execution is the subagen
 - Running the project's own tests (`pytest`, `npm test`, `cargo test`, `go test`, …).
 - Running the project's own lint/format/typecheck (`ruff`, `mypy`, `tsc`, `eslint`, `prettier`, `gofmt`, `clippy`, …).
 - Running the project's own build (`cargo build`, `npm run build`, `make`, …).
-- Running the project's own entrypoints (`citadel serve`, `python -m foo`, `./bin/myapp`).
+- Running the project's own entrypoints (`<project> serve`, `python -m foo`, `./bin/myapp`).
 - Running the project's own dev servers, REPLs, scripts.
 - Anything that **imports** the project's modules or **compiles** its source.
 

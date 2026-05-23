@@ -39,7 +39,7 @@ For every external system the project will integrate with (Discord, Slack, Googl
 - **What's the credential rotation story?** Manual rotation? Automatic refresh? Indefinite?
 - **What happens if the credential is missing or invalid?** Hard fail? Warn and degrade? Block specific features only?
 
-If any integration's answer is "I don't know yet" — that's an open question, log it. **Do not proceed to design with unresolved integration questions.** They surface as bugs in production (cf. Citadel v1.0.6 Google OAuth dead-end).
+If any integration's answer is "I don't know yet" — that's an open question, log it. **Do not proceed to design with unresolved integration questions.** They surface as bugs in production (e.g. OAuth flows where nobody specified who produces the credential file).
 
 ### 1.3 Operator install walkthrough (MANDATORY)
 
@@ -58,7 +58,7 @@ For each step, capture:
 
 This walkthrough becomes the REQUIREMENTS.md §"Install & First-Run Experience" section. It is **the spec for `setup.sh` + `README.md` + `preflight` together**.
 
-If the operator can't walk this without going "I'll figure that out later" more than once, that's a red flag — the install path is undefined, and the project will ship with operator-discovered install bugs (cf. Citadel v1.0.3–v1.0.7).
+If the operator can't walk this without going "I'll figure that out later" more than once, that's a red flag — the install path is undefined, and the project will ship with operator-discovered install bugs.
 
 ### 1.4 Source-of-truth declarations
 
@@ -69,12 +69,12 @@ Example template:
 | Fact | Authoritative source | Read by | Written by |
 |------|---------------------|---------|------------|
 | Backup destination path | `config.toml:[backup].path` | `backup.drive.upload()` | Operator (manual edit) |
-| Discord bot tokens | `/etc/citadel/citadel.env:DISCORD_TOKEN_*` | systemd EnvironmentFile + `discord_bot.app:load_*` | Operator (manual edit) |
-| age public key | `/etc/citadel/citadel.env:BACKUP_AGE_RECIPIENT` (auto-populated from `age-identity.txt`) | `backup.age:encrypt()` | `setup.sh` Step 8.5 |
+| API tokens (e.g. Discord, Slack) | `/etc/<project>/<project>.env:TOKEN_*` | systemd EnvironmentFile + `app.load_*` | Operator (manual edit) |
+| Encryption recipient key | `/etc/<project>/<project>.env:RECIPIENT` (auto-populated from `identity.txt`) | `crypto.encrypt()` | `setup.sh` |
 
 This table goes into REQUIREMENTS.md §"Sources of truth" and is mirrored in DESIGN.md §"Sources of truth" (same data, different audience). When two components disagree on a fact, this table is the tie-breaker — and the disagreement itself is the bug to fix.
 
-Missing this table is how Citadel shipped v1.0.5 (loader looked at `/etc/citadel/.env`, setup.sh wrote `/etc/citadel/citadel.env`, neither component knew the other existed).
+Missing this table is how projects ship bugs where one component reads `/etc/<project>/.env` while another writes `/etc/<project>/<project>.env` — neither component knows about the other; the config silently goes missing.
 
 ### 1.5 Functional and non-functional requirements
 
@@ -95,7 +95,7 @@ For each phase in the plan (which you'll write next per `~/.claude/docs/plan.md`
 - ✅ README documents the new capability
 - ✅ DESIGN.md updated if the phase added a lifecycle or external integration
 
-"Done" without an install-gate check is "not done" — that's the Citadel v1.0.x lesson.
+"Done" without an install-gate check is "not done" — unit-test green is not the same as install-works-on-clean-VM.
 
 ---
 

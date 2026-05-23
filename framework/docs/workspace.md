@@ -1,6 +1,6 @@
 # Workspace root and project switching
 
-**The Bruno workspace root is `~/workspace-bruno/`** (override via env var `CLAUDE_WORKSPACE_ROOT`). Every project lives directly under it — `~/workspace-bruno/citadel/`, `~/workspace-bruno/garuda/`, etc. Bruno's blast radius for writes is confined to this folder; reads are broader (system inspection still works) with audit logging on cross-workspace reads.
+**The Bruno workspace root is `~/workspace-bruno/`** (override via env var `CLAUDE_WORKSPACE_ROOT`). Every project lives directly under it — `~/workspace-bruno/<project>/`. Bruno's blast radius for writes is confined to this folder; reads are broader (system inspection still works) with audit logging on cross-workspace reads.
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Operation | Inside `~/workspace-bruno/` | Outside (canonical safe paths) | Outside (other) |
 |-----------|------------------------------|-------------------------------|-----------------|
-| `Read`, `Glob`, `Grep` | Allowed | Allowed (`/etc/citadel/`, `/var/lib/citadel/`, `~/.claude/`, `/etc/os-release`, etc.) | Allowed; logged to `~/.claude/audit/cross-workspace-reads.log` |
+| `Read`, `Glob`, `Grep` | Allowed | Allowed (`~/.claude/`, `/etc/os-release`, and project-specific paths the project's `.claude/settings.json` allows) | Allowed; logged to `~/.claude/audit/cross-workspace-reads.log` |
 | `Write`, `Edit` | Allowed | Denied — protected by deny patterns + `workspace-write-block.sh` hook | **Denied** (hard) |
 | `Bash` execution | Allowed | Allowed via `permissions.allow` patterns | Allowed via `permissions.allow` patterns; `cd` outside workspace blocked by `cwd-escape-block.sh` |
 
@@ -21,7 +21,7 @@ Hooks (`framework/hooks/`) run as Claude Code infrastructure, not as Bruno tool 
 Bruno cannot switch its working project autonomously. Two operator-driven flows:
 
 1. **`/switch-project <name>`** — Claude Code-native slash command. Lives at `~/.claude/commands/switch-project.md`. Use in the Claude Code CLI.
-2. **`!switch-project <name>`** — Text-pattern form. Detected by `UserPromptSubmit` hook (`switch-project-detect.sh`) so it works in any text interface — Claude Code CLI, Discord channels routed through a harness like Citadel, etc.
+2. **`!switch-project <name>`** — Text-pattern form. Detected by `UserPromptSubmit` hook (`switch-project-detect.sh`) so it works in any text interface — Claude Code CLI, or any non-CLI channel routed through a harness that forwards prompts.
 
 Both forms surface the same Bruno-handled flow:
 
@@ -31,7 +31,7 @@ Both forms surface the same Bruno-handled flow:
 4. On confirmation, Bruno updates `$CLAUDE_PROJECT_DIR` (via `cd` — the one place outside `/new-project` where `cd` is permitted, per `execution-policy.md` §"slash-command cd exception").
 5. Bruno re-runs preflight checks for the new project's `CLAUDE.md` / inheritance clause.
 
-Mid-session approval is per-switch, not session-wide. If you switch from `citadel` to `garuda` and back, both transitions require approval.
+Mid-session approval is per-switch, not session-wide. Every transition between projects requires approval, even returning to a project visited earlier in the session.
 
 ---
 

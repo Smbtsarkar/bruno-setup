@@ -6,8 +6,8 @@
 # (master CLAUDE.md workspace section / workspace.md). Reads can be broad; writes must stay inside the workspace.
 #
 # Exceptions (writes allowed despite being outside workspace):
-#   - None at the framework layer. Project-specific exceptions (e.g. citadel writing
-#     to /etc/citadel/ via setup.sh) are Bash invocations, not Write/Edit tool calls.
+#   - None at the framework layer. Project-specific exceptions (e.g. a project writing
+#     to /etc/<project>/ via setup.sh) are Bash invocations, not Write/Edit tool calls.
 
 set -euo pipefail
 

@@ -4,7 +4,7 @@ Main agent uses this when writing `docs/DESIGN.md` for a project. DESIGN.md is t
 
 **DESIGN.md is REQUIRED if the project integrates any external system** (Discord, Slack, OAuth provider, MCP server, third-party SDK, message queue, database with non-trivial schema). Recommended otherwise.
 
-Without DESIGN.md, lifecycle bugs (init-before-use, connect-before-query, env-loaded-where), source-of-truth conflicts, and error-recovery omissions all surface in production. The Citadel v1.0.2, v1.0.5, v1.0.6, and v1.0.9 bug classes were all DESIGN.md-shaped gaps.
+Without DESIGN.md, lifecycle bugs (init-before-use, connect-before-query, env-loaded-where), source-of-truth conflicts, and error-recovery omissions all surface in production. These bug classes are DESIGN.md-shaped gaps — code that's plausible in isolation but breaks at integration time.
 
 ---
 
@@ -45,7 +45,7 @@ Copy the table from REQUIREMENTS.md §5. Repeat it here for the code-author audi
 
 When a coder is implementing component X that touches fact Y, they should be able to look at this table and know: "the authoritative source is Z; I read from Z; if I need to write Y, only the documented writer-component does that."
 
-This single section, taken seriously, prevents the v1.0.5/v1.0.9 class of bug (two sources of truth, neither wins).
+This single section, taken seriously, prevents the source-of-truth-conflict class of bug (two sources, neither wins, components disagree).
 
 ### §2 Lifecycles
 
@@ -77,7 +77,7 @@ For every external integration declared in REQUIREMENTS §3, document:
 - Teardown fails: <log and continue, or hard-fail>
 ```
 
-**The "Required before-call state" line is the single most important field**, because that's exactly what mocks must enforce per master CLAUDE.md §15 / testing-patterns.md. The Citadel v1.0.9 bug was: ClaudeSDKClient required `connect()` before `query()`; the lifecycle wasn't documented; the mock didn't enforce it; tests passed; production crashed.
+**The "Required before-call state" line is the single most important field**, because that's exactly what mocks must enforce per master CLAUDE.md §15 / testing-patterns.md. Canonical failure: an SDK that requires `connect()` before `query()`, a lifecycle that isn't documented, a mock that doesn't enforce the order — tests pass, production crashes on first real call.
 
 If you can't fill this section for an integration, **you don't yet understand the integration well enough to write code that uses it.** Stop and learn.
 
@@ -161,7 +161,7 @@ For each row, the four-way classification matters:
 - First-run only: never regenerate after initial production (e.g. encryption keys — regen would orphan past data).
 - Mixed (e.g. config.toml: operator edits after seeding): seed once, then operator owns it.
 
-Citadel v1.0.6 (Google OAuth flow missing) was a first-install-vs-re-install ambiguity: nobody specified who produced `token.json` or when.
+A classic first-install-vs-re-install failure: nobody specifies who produces an OAuth `token.json` (or equivalent credential file) or when, so the install completes but the first operator action fails because the credential never got created.
 
 ### §6 Configuration Loading and Precedence
 
@@ -170,17 +170,17 @@ If the project loads config from multiple sources (file + env + CLI flag), docum
 ```markdown
 **Precedence (highest to lowest):**
 1. CLI flag (e.g. `--key /path/to/key`)
-2. Env var (e.g. `CITADEL_KEY_PATH`)
-3. Config file field (e.g. `[backup].key_path` in `/etc/citadel/config.toml`)
-4. Hardcoded default (e.g. `/etc/citadel/age-identity.txt`)
+2. Env var (e.g. `<PROJECT>_KEY_PATH`)
+3. Config file field (e.g. `[backup].key_path` in `/etc/<project>/config.toml`)
+4. Hardcoded default (e.g. `/etc/<project>/identity.txt`)
 
 **Loading order:**
-- Process start: env vars from `EnvironmentFile=` (systemd) — populates `os.environ` before Python imports any module.
+- Process start: env vars from `EnvironmentFile=` (systemd) — populates the process env before any module imports.
 - CLI startup: root callback runs `dotenv.load_dotenv(path, override=False)` — adds missing env vars from the file, does NOT overwrite what systemd already set.
-- Per-component: each module reads `os.environ.get(...)` directly when needed.
+- Per-component: each module reads from the process env directly when needed.
 ```
 
-The Citadel v1.0.5 bug was: the loader looked at `/etc/citadel/.env`, setup.sh wrote `/etc/citadel/citadel.env`, the precedence-and-loading section didn't exist, no component owned reconciling them.
+A classic source-of-truth bug at this layer: the loader reads from one env-file path while `setup.sh` writes to a different env-file path; no component owns reconciling them, the precedence-and-loading section doesn't exist, and the config silently goes missing.
 
 ---
 

@@ -79,8 +79,10 @@ FORBIDDEN_PATTERNS=(
     '\bsudo\s+(rm|dd|chmod\s+-R|chown\s+-R)\b|SUDO_DESTRUCTIVE'
 )
 
-# Canonical safe absolute paths for cd (system / well-known operational dirs)
-CD_SAFE_PATHS_REGEX='^(/etc/citadel/|/var/lib/citadel/|/opt/citadel|/tmp/|/tmp$|/etc/|/var/|/usr/|/opt/|/home/|'"$HOME"'|'"${CLAUDE_PROJECT_DIR:-/nonexistent}"')'
+# Canonical safe absolute paths for cd (system / well-known operational dirs).
+# Project-specific paths (e.g. /etc/<project>/) belong in the per-project
+# .claude/settings.json, not in the framework-wide hook.
+CD_SAFE_PATHS_REGEX='^(/tmp/|/tmp$|/etc/|/var/|/usr/|/opt/|/home/|'"$HOME"'|'"${CLAUDE_PROJECT_DIR:-/nonexistent}"')'
 
 # --- Check each chunk ---
 BLOCKED_REASONS=()

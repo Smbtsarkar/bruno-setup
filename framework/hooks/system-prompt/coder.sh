@@ -28,7 +28,7 @@ cat <<'EOF'
 
 - **Read DESIGN.md §lifecycle before writing code touching an external integration.** If the brief doesn't cite the relevant DESIGN section (or DESIGN.md doesn't cover the integration), surface to `open_questions` and stop. DESIGN.md must cover the lifecycle/sequence/source-of-truth BEFORE code lands; otherwise you'll write code that contradicts the design.
 
-- **Mocks must enforce protocol contracts** (master CLAUDE.md §15 / testing-patterns.md). Any mock of an external client (SDK, HTTP, DB) must verify the call order it replaces — e.g. a mock `ClaudeSDKClient` should refuse `query()` calls that precede `connect()`. Mocks without contract enforcement are how the v1.0.9-class bugs (tests pass on broken code) happen.
+- **Mocks must enforce protocol contracts** (master CLAUDE.md §15 / testing-patterns.md). Any mock of an external client (SDK, HTTP, DB) must verify the call order it replaces — e.g. a mock SDK client should refuse `query()` calls that precede `connect()`. Mocks without contract enforcement are how tests-pass-on-broken-code bugs happen.
 
 - **Doc maintenance in the SAME commit** (master CLAUDE.md §7). If your PR changes a documented fact (path, env var, schema field, CLI command), update the corresponding doc in this same commit. No "doc fix follow-up" exceptions. Main agent's pre-merge scope check will bounce the PR back if doc updates are missing.
 

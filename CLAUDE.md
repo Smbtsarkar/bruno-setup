@@ -26,7 +26,7 @@ The master Bruno `CLAUDE.md` (under `framework/CLAUDE.md`) is intended for `~/.c
 This repo is the **source of those rules**, not a project that should follow them. Specifically:
 
 - **No DESIGN.md, no PLAN.md, no install-gate for this repo.** It's a sync target, not a Bruno-managed application.
-- **No PR pipeline.** This repo follows the `claude-setup` single-branch exception (master only, direct commits, no feature branches, no PRs, no release ceremony). See `framework/CLAUDE.md` §6.
+- **No PR pipeline.** This repo follows the single-branch exception (master only, direct commits, no feature branches, no PRs, no release ceremony). See `framework/CLAUDE.md` §5.
 - **No per-phase deployment gate.** There's nothing to deploy — `scripts/sync.sh` is the entire deployment.
 - **The framework/CLAUDE.md inside this repo is NOT this repo's own CLAUDE.md.** It's a payload being shipped to `~/.claude/`. Treat the `framework/` directory as opaque data, not as nested rules for the operator session that's editing it.
 
@@ -44,12 +44,12 @@ This repo is the **source of those rules**, not a project that should follow the
 
 ## Why this layout
 
-The framework was originally staged inside `citadel/docs/proposed-framework/` while being developed. Once stable, it deserved its own repository for clean install/update flow without dragging citadel-specific history.
+This repo is the canonical install/update source for the Bruno framework. Keeping it separate from any individual project means `scripts/sync.sh` is a clean operation — no project-specific history dragged along.
 
-Citadel-specific extensions (e.g., `~/Projects/citadel/.claude/settings.json` with uv/alembic/age allow patterns) live in the citadel repo itself, NOT here. This repo is OS-and-project-agnostic Bruno framework.
+Project-specific extensions (allow lists for project CLIs, paths under `/etc/<project>/`, service-control entries, etc.) live in each project's own `.claude/settings.json` and `.claude/hooks/`, NOT here. This repo is OS-and-project-agnostic Bruno framework.
 
 ---
 
 ## Single-branch exception
 
-Per `framework/CLAUDE.md` §6, `claude-setup` is the only single-branch project (master only). `bruno-setup` follows the same exception — same shape, same reasoning (framework infra, single operator, no public consumers requiring PR-style review history).
+Per `framework/CLAUDE.md` §5, `bruno-setup` is one of the few single-branch projects (master only). Reason: framework infra, single operator, no public consumers requiring PR-style review history. Same shape applies to any sibling framework-source repo (e.g. `claude-setup` style infra).

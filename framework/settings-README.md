@@ -1,6 +1,6 @@
-# Bruno framework — `settings/`
+# Bruno framework — `settings.json`
 
-Claude Code `settings.json` files for the Bruno framework: the base ruleset that applies everywhere, plus the citadel-specific additions, plus stack fragments the scaffolder merges at `/new-project` time.
+Claude Code `settings.json` files for the Bruno framework: the base ruleset that applies everywhere, plus stack fragments the scaffolder merges at `/new-project` time. Project-specific extensions live with the project, not here.
 
 ---
 
@@ -8,32 +8,19 @@ Claude Code `settings.json` files for the Bruno framework: the base ruleset that
 
 | File | Goes to | Purpose |
 |------|---------|---------|
-| `base.json` | `~/.claude/settings.json` AND `~/.claude/templates/_settings/base.json` | Framework defaults: permissions, hooks config, thinking levels |
-| `citadel-additions.json` | `citadel/.claude/settings.json` | Citadel-specific allow/ask entries — **extends only, never overrides** the base |
-| `stack-fragments/python-cli.fragment.json` | `~/.claude/templates/_settings/python-cli.fragment.json` | Scaffolder merges this into a new Python-CLI project's `.claude/settings.json` |
-| `stack-fragments/claude-skill.fragment.json` | `~/.claude/templates/_settings/claude-skill.fragment.json` | Same, for `claude-skill` stack |
+| `settings.json` | `~/.claude/settings.json` AND `~/.claude/templates/_settings/base.json` | Framework defaults: permissions, hooks config, thinking levels |
+| `templates/_settings/python-cli.fragment.json` | `~/.claude/templates/_settings/python-cli.fragment.json` | Scaffolder merges this into a new Python-CLI project's `.claude/settings.json` |
+| `templates/_settings/claude-skill.fragment.json` | `~/.claude/templates/_settings/claude-skill.fragment.json` | Same, for `claude-skill` stack |
 
 ---
 
 ## Install
 
-```bash
-# Master settings (also the source-of-truth for scaffolder's base merge)
-cp settings/base.json ~/.claude/settings.json
-mkdir -p ~/.claude/templates/_settings
-cp settings/base.json ~/.claude/templates/_settings/base.json
-
-# Stack fragments (scaffolder merges these per-project at /new-project time)
-cp settings/stack-fragments/*.json ~/.claude/templates/_settings/
-
-# Citadel-specific additions
-cp settings/citadel-additions.json ~/Projects/citadel/.claude/settings.json
-```
+Run `scripts/sync.sh` from the repo root. It rsyncs `framework/` into `~/.claude/` (including the templates and stack fragments) and installs the base settings.
 
 Verify:
 ```bash
 python3 -c "import json; json.load(open('$HOME/.claude/settings.json'))" && echo "OK"
-python3 -c "import json; json.load(open('$HOME/Projects/citadel/.claude/settings.json'))" && echo "OK"
 ```
 
 ---
@@ -42,15 +29,15 @@ python3 -c "import json; json.load(open('$HOME/Projects/citadel/.claude/settings
 
 When Claude Code resolves a session's effective settings, it composes from three layers (highest priority last):
 
-1. **User-global** — `~/.claude/settings.json` (= `base.json` post-install).
-2. **Project** — `<project>/.claude/settings.json` (= scaffolded merge of `base.json` + applicable `<stack>.fragment.json`, or post-scaffold operator edits, or `citadel-additions.json` for citadel).
+1. **User-global** — `~/.claude/settings.json` (= the framework `settings.json` post-install).
+2. **Project** — `<project>/.claude/settings.json` (= scaffolded merge of `base.json` + applicable `<stack>.fragment.json`, or post-scaffold operator edits).
 3. **Project-local override** — `<project>/.claude/settings.local.json` (gitignored; per-developer secrets / preferences).
 
-**The Bruno framework's contract: project layers EXTEND, never OVERRIDE.** Per the operator's directive (this session's plan), `permissions.allow` / `ask` / `deny` should be **union sets** — adding entries, never replacing or removing entries that the base declares.
+**The Bruno framework's contract: project layers EXTEND, never OVERRIDE.** `permissions.allow` / `ask` / `deny` are **union sets** — projects add entries, never replace or remove entries the base declares.
 
 This means:
-- `permissions.allow` in `citadel-additions.json` adds citadel-specific entries; the base allow list (git, gh, ls, etc.) still applies.
-- `permissions.deny` in `base.json` is the floor — no project can re-allow what the base denies. Forbidden patterns stay forbidden.
+- A project's `permissions.allow` adds project-specific entries; the base allow list (git, gh, ls, etc.) still applies.
+- `permissions.deny` in the base is the floor — no project can re-allow what the base denies. Forbidden patterns stay forbidden.
 - `permissions.ask` similarly stacks; project additions raise additional approval prompts but don't suppress base ones.
 
 If you find yourself wanting a project to override a base entry, that's a signal the base entry is wrong. Fix the base.
@@ -59,7 +46,7 @@ The scaffolder (`~/.claude/agents/scaffolder.md`) implements this union semantic
 
 ---
 
-## What's in `base.json`
+## What's in the base `settings.json`
 
 ### Notification + thinking defaults
 - `effortLevel: "high"` — Bruno (main session) uses high thinking depth by default.
@@ -88,22 +75,40 @@ The scaffolder (`~/.claude/agents/scaffolder.md`) implements this union semantic
 ### Security posture
 - `allowedHttpHookUrls: []` — no HTTP hooks; no outbound URLs from hook calls.
 - `httpHookAllowedEnvVars: []` — no env-var leakage to HTTP hooks (defensive even with no HTTP hooks).
-- `disableAllHooks: false` — hooks are mandatory; an operator who wants to disable a single hook should edit `base.json` and document the reason.
+- `disableAllHooks: false` — hooks are mandatory; an operator who wants to disable a single hook should edit the base `settings.json` and document the reason.
 
 ---
 
-## What's in `citadel-additions.json`
+## Per-project extensions
 
-Only extensions:
-- `allow`: `uv *`, `citadel *`, `alembic *`, `bash scripts/dev/*.sh`, `bash deploy/setup.sh`, `pre-commit *`, `age *`, `sudo -u citadel claude *`, plus reads under `/etc/citadel/` and `/var/lib/citadel/`.
-- `ask`: `git tag v*` and `git push origin v*` (release-cut tags), `sudo systemctl * citadel.service` (service control).
-- No `deny` additions — base already covers framework-wide denies; citadel needs nothing stricter.
+Project-specific permissions, hook references, and allowlist entries live in `<project>/.claude/settings.json`, **not** in this repo. The framework stays project-agnostic on purpose.
+
+A typical project addition looks like:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(<project> *)",
+      "Bash(sudo systemctl * <project>.service)",
+      "Read(/etc/<project>/**)",
+      "Read(/var/lib/<project>/**)"
+    ],
+    "ask": [
+      "Bash(git tag v*)",
+      "Bash(git push origin v*)"
+    ]
+  }
+}
+```
+
+Per union semantics, those entries stack on top of the base — they don't replace any framework defaults. The project repo is the source of truth for project-specific operational paths, service names, and tooling allows.
 
 ---
 
 ## Stack fragments
 
-Each fragment is merged with `base.json` by the scaffolder when a project of that stack is initialised via `/new-project`. Fragments **only add** stack-specific allow / deny entries — they never override base.
+Each fragment is merged with the base by the scaffolder when a project of that stack is initialised via `/new-project`. Fragments **only add** stack-specific allow / deny entries — they never override base.
 
 Current fragments:
 - `python-cli` — allows `uv *`, `pytest`, `ruff`, `mypy`; denies `pip install*` (forces uv-managed installs).
@@ -116,14 +121,8 @@ Adding a new stack:
 
 ---
 
-## Resolves the broken scaffolder contract
-
-`scaffolder.md` (lines 86-113) references `~/.claude/templates/_settings/base.json` as the merge source, but **this file was never created** prior to this PR. Scaffolder previously returned `status: blocked` on first invocation for any new project. Installing `base.json` to that path resolves the broken contract.
-
----
-
 ## See also
 
-- `../hooks/README.md` — hook architecture, script conventions, exit-code semantics, defense-in-depth layering.
-- `../CLAUDE.md` §2, §4, §8, §17 — the rules that the permissions and hooks enforce.
-- `../docs/execution-policy.md` — main-agent execution boundary, which the deny list helps enforce.
+- `hooks/README.md` — hook architecture, script conventions, exit-code semantics, defense-in-depth layering.
+- `CLAUDE.md` §1, §3, §6, §7 — the rules that the permissions and hooks enforce.
+- `docs/execution-policy.md` — main-agent execution boundary, which the deny list helps enforce.

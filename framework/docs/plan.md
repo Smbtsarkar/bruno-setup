@@ -82,9 +82,9 @@ Every PR has every field. Missing fields are signals that the planning is incomp
 - **Reads from DESIGN / REQUIREMENTS** — forces the coder to consult canonical sources. If a PR can't cite specific sections, either the docs are too thin or the PR isn't well-scoped.
 - **Unit tests required** — pre-commits to what's verifiable in isolation. Test-driven scoping; tests aren't a follow-up PR.
 - **Integration tests required** — covers what unit tests can't (cross-module behaviour, real I/O paths).
-- **Operator-runs-this test** — the install-gate concept at PR granularity. Catches install/UX bugs at PR-merge time, not at release time. The Citadel v1.0.x install bug class came from PRs that had no operator-simulation test.
+- **Operator-runs-this test** — the install-gate concept at PR granularity. Catches install/UX bugs at PR-merge time, not at release time. PRs without an operator-simulation test are how install-bug classes ship to operators undetected.
 - **Acceptance criteria** — copied into the PR body so it's verifiable at PR review time. Each criterion has a true/false answer.
-- **Port from** — citation for the coder. "Port from `~/Projects/<other>/src/<module>.py`" is the highest-leverage form of brief — much faster than designing from scratch.
+- **Port from** — citation for the coder. "Port from `~/workspace-bruno/<other>/src/<module>.py`" is the highest-leverage form of brief — much faster than designing from scratch.
 
 ---
 

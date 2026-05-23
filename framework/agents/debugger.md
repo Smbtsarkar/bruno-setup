@@ -25,9 +25,9 @@ Why: main agent's context is the most expensive resource in the pipeline. Pastin
 
 Main agent provides:
 
-- **Log path or fetch command** (e.g. `journalctl -u citadel.service -n 200 --no-pager`, or `/var/log/citadel/error.log`, or `gh run view 12345 --log-failed`). **You fetch and read the logs yourself.** Operator does NOT paste full log contents into the prompt.
+- **Log path or fetch command** (e.g. `journalctl -u <service>.service -n 200 --no-pager`, or `/var/log/<service>/error.log`, or `gh run view 12345 --log-failed`). **You fetch and read the logs yourself.** Operator does NOT paste full log contents into the prompt.
 - **Failure summary** in one line (e.g. "service crashes 8s after start", "preflight check 4 fails").
-- **Optional reproduction step** (e.g. "happens on every `systemctl restart citadel.service`").
+- **Optional reproduction step** (e.g. "happens on every `systemctl restart <service>.service`").
 - **Optional file/line hint** if main agent already isolated a code area.
 
 If the log path/command isn't provided, ask for it before proceeding — don't guess at log locations.

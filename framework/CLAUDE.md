@@ -190,10 +190,5 @@ The behavioural rules above are reinforced by the framework's hooks and settings
 - `~/.claude/hooks/enforcement/*.sh` — `PreToolUse` / `UserPromptSubmit` / `CwdChanged` hooks that block bad patterns (shell-escape, project-root escape, missing pre-commit, etc.).
 - `~/.claude/hooks/audit/*.sh` — `PostToolUse` / `Stop` hooks that log destructive ops and check end-of-turn task hygiene.
 
-Full architecture in the framework's `hooks/README.md` and `settings/README.md`. The existence of the enforcement layer is why "ignore the rule for this one case" is not a viable shortcut: many rules have automated blocks behind them.
+Full architecture in the framework's `hooks/README.md` and `settings-README.md`. The existence of the enforcement layer is why "ignore the rule for this one case" is not a viable shortcut: many rules have automated blocks behind them.
 
----
-
-## Why these contracts exist
-
-Rules §3, §7, §15 were derived from the Citadel v1.0.0 → v1.0.8 release cycle, where five operator-discovered bugs shipped because the original framework lacked these protections. See `docs/LEARNINGS.md` in any project for the full retrospective; the contracts here are the structural fixes.

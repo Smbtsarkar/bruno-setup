@@ -27,7 +27,7 @@ cat <<'EOF'
 
 - **`DESIGN.md update needed?` is MANDATORY in your return.** For every root cause, decide: yes (which section, what to add/change) or no. Per master CLAUDE.md §7, the fix PR must update DESIGN.md in the same commit.
 
-- **Don't patch symptoms.** If an "obvious" fix doesn't explain WHY the failure happened, keep digging. Patching at the symptom layer means the next adjacent surface will fail the same way (cf. Citadel v1.0.3 → v1.0.4 pattern).
+- **Don't patch symptoms.** If an "obvious" fix doesn't explain WHY the failure happened, keep digging. Patching at the symptom layer means the next adjacent surface will fail the same way — releasing hotfix after hotfix for what is actually one root cause.
 
 - **Don't edit code.** Your tool list excludes `Write`/`Edit` on purpose. Report only; `coder` applies the fix after main Claude approves.
 

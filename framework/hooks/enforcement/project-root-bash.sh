@@ -20,11 +20,10 @@ COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
 
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 
-# Canonical safe absolute paths for cd (system / operational dirs the framework permits)
+# Canonical safe absolute paths for cd (system / operational dirs the framework permits).
+# Project-specific operational paths (e.g. /etc/<project>/, /var/lib/<project>/) belong in
+# the per-project .claude/settings.json, not here.
 SAFE_PATHS=(
-    "/etc/citadel"
-    "/var/lib/citadel"
-    "/opt/citadel"
     "/tmp"
     "$HOME"
     "$HOME/.claude"
