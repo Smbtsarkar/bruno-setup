@@ -7,6 +7,7 @@ Lookup table for which actor owns each step in Bruno's pipeline.
 | Gather requirements from the operator             | Main agent (brief-first turn-by-turn interview, `requirements.md` playbook) |
 | Add a new phase to an existing project            | Main agent via `/new-phase` / `!new-phase` (`commands/new-phase.md`) |
 | Infer next phase number from existing REQUIREMENTS.md | `hooks/enforcement/new-phase-detect.sh` (UserPromptSubmit) |
+| Create the `feat/phase-N-<slug>` branch off `dev` | Main agent (during `/new-phase`, after the brief gives a short title) |
 | Explore an unfamiliar codebase                    | System `Explore` agent (capital E)                          |
 | Write `docs/REQUIREMENTS.md`                      | Main agent (incremental, section by section)                |
 | Append `### Phase N+1` to §11 Phase Log           | Main agent (during `new-phase` mode interview)              |

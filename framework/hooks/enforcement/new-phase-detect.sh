@@ -76,8 +76,12 @@ fi
 
 NEXT_PHASE=$((INFERRED_CURRENT + 1))
 
-# Check branch is not master/dev (pre-flight)
+# Branch + working-tree pre-flight
 BRANCH=$(cd "$CWD" && git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+DIRTY="no"
+if cd "$CWD" 2>/dev/null && [[ -n "$(git status --porcelain 2>/dev/null)" ]]; then
+    DIRTY="yes"
+fi
 
 cat <<EOF
 **New-phase request detected (master CLAUDE.md §6 / pipeline.md):**
@@ -89,17 +93,24 @@ cat <<EOF
 - Next phase will be: **Phase $NEXT_PHASE**
 - §11 Phase Log bootstrap needed: $BOOTSTRAP_NEEDED
 - Current git branch: \`$BRANCH\`
+- Working tree dirty: $DIRTY
 
 Per the new-phase flow (\`framework/commands/new-phase.md\`, \`framework/docs/requirements.md\` §2 new-phase mode):
 
-1. **Pre-flight:** if branch is \`master\` or \`dev\`, stop and tell the operator to create a feature branch first (suggested: \`feat/phase-$NEXT_PHASE-<short-desc>\`).
-2. **Confirm Phase $NEXT_PHASE** with the operator before proceeding.
-3. **Bootstrap §11 Phase Log** if missing (append it BEFORE asking for the brief). Capture the original \`<!-- BRIEF: ... -->\` as Phase 1 inside the new §11 if no phase tagging existed yet.
-4. **Ask for the phase-tagged brief** verbatim: *"Brief for Phase $NEXT_PHASE — what does this phase add, change, or cut? Free text. Please mark with \`# Phase $NEXT_PHASE:\` at the top so we record the right phase number."*
-5. **Record the brief verbatim** as \`<!-- BRIEF (Phase $NEXT_PHASE): ... -->\` inside a new \`### Phase $NEXT_PHASE — <short title>\` subsection appended to §11.
-6. **Run the focused delta interview** — only ask about REQUIREMENTS sections this phase touches (per requirements.md §5 question script, scoped to deltas). Update §1–§10 in place AND update the §11.Phase $NEXT_PHASE delta summary in parallel.
-7. **Approval gate** (per requirements.md §8): surface the delta summary + TBDs, ask the operator to approve before authoring DESIGN.md deltas (only if lifecycles/sources-of-truth changed) and PLAN.md deltas (new \`## Phase $NEXT_PHASE\` section).
-8. **No \`scaffolder\`** for new-phase — the project is already scaffolded. After approval, the standard pipeline resumes with \`coder\` for Phase $NEXT_PHASE.
+1. **Pre-flight:**
+   - If working tree is dirty, stop: "Uncommitted changes detected. Commit or stash first, then re-run \`/new-phase\`."
+   - Branch handling:
+     - \`master\` / \`dev\` → you'll auto-create \`feat/phase-$NEXT_PHASE-<slug>\` in step 5 (after the brief gives you a short title).
+     - Any other branch → ask the operator: "Currently on \`$BRANCH\`. Create new \`feat/phase-$NEXT_PHASE-<slug>\` from \`dev\`, or stay on this branch?"
+2. **Confirm Phase $NEXT_PHASE** with the operator. Wait for explicit y/yes/proceed before any branch creation or file edits.
+3. **Ask for the phase-tagged brief** verbatim: *"Brief for Phase $NEXT_PHASE — what does this phase add, change, or cut? Free text. Please mark with \`# Phase $NEXT_PHASE:\` at the top so we record the right phase number."* — **do not write to any file yet**; the brief lives in memory until step 5.
+4. **Extract the short title** from the brief (3–6 word summary). Ask one focused follow-up if it isn't clear.
+5. **Create the feature branch** (if not staying on current): derive \`<slug>\` from the short title (lowercase, non-alphanumeric → \`-\`, collapse \`-\`, ≤40 chars), then \`git checkout dev && git pull --ff-only origin dev && git checkout -b feat/phase-$NEXT_PHASE-<slug>\`. Surface the new branch name to the operator. If any git step fails, stop and surface the error — do NOT edit REQUIREMENTS.md on master/dev.
+6. **Bootstrap §11 Phase Log** if missing (now on the feature branch). Capture the original \`<!-- BRIEF: ... -->\` as Phase 1 inside the new §11.
+7. **Append \`### Phase $NEXT_PHASE\`** with the verbatim brief as \`<!-- BRIEF (Phase $NEXT_PHASE): ... -->\`.
+8. **Run the focused delta interview** — only ask about REQUIREMENTS sections this phase touches (per requirements.md §5 question script, scoped to deltas). Update §1–§10 in place AND update the §11.Phase $NEXT_PHASE delta summary in parallel.
+9. **Approval gate** (per requirements.md §8): surface the delta summary + TBDs + branch name, ask the operator to approve before authoring DESIGN.md deltas (only if lifecycles/sources-of-truth changed) and PLAN.md deltas (new \`## Phase $NEXT_PHASE\` section).
+10. **No \`scaffolder\`** for new-phase — the project is already scaffolded. After approval, the standard pipeline resumes with \`coder\` for Phase $NEXT_PHASE.
 
 Do NOT author DESIGN.md or PLAN.md deltas before the operator approves Phase $NEXT_PHASE in REQUIREMENTS.md. The approval gate is load-bearing — same as \`/new-project\`.
 EOF
