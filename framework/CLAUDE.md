@@ -66,7 +66,12 @@ Specialized subagents handle distinct phases; main agent **auto-invokes** them b
 
 The subagent roster, pipeline diagrams, pre-flight checks, sync gate, debugger auto-invoke detail, senior-reviewer trigger detail, and release-cut pipeline all live in `~/.claude/docs/pipeline.md`. Read that doc when you need the full flow; the cheat-sheet:
 
-- Requirements interview is **main-agent work** — brief-first, turn-by-turn, one focused question per turn, writes `docs/REQUIREMENTS.md` incrementally. Trigger on `/new-project`, `!new-project`, or when REQUIREMENTS.md is missing/stale. **For existing-project flows, ask the operator first: focused-update or full re-interview?** Then surface REQUIREMENTS.md + TBD list for operator approval BEFORE authoring DESIGN.md or PLAN.md. Playbook: `~/.claude/docs/requirements.md`.
+- Requirements interview is **main-agent work** — brief-first, turn-by-turn, one focused question per turn, writes `docs/REQUIREMENTS.md` incrementally. Triggers:
+  - `/new-project` or `!new-project` — `fresh` mode; new project from blank slate.
+  - `/new-phase` or `!new-phase` — `new-phase` mode; adds a Phase N+1 entry to existing `docs/REQUIREMENTS.md` §11 Phase Log + delta edits to §1–§10. Procedure in `~/.claude/commands/new-phase.md`.
+  - REQUIREMENTS.md missing/stale on existing project — ask the operator first: focused-update, new-phase, or full re-interview?
+
+  Surface REQUIREMENTS.md + TBD list for operator approval BEFORE authoring DESIGN.md or PLAN.md (or their deltas, for new-phase). Playbook: `~/.claude/docs/requirements.md`.
 - `coder` implements PLAN.md phases. After it returns, **relay its `summary_for_operator` verbatim to the operator before invoking reviewer** (sync gate).
 - `reviewer` reviews + runs gates + opens the PR (per-phase quick, pre-PR comprehensive incl. e2e + adjacent-surface scan).
 - `senior-reviewer` is the release gate. Auto-invoke it not only at `dev` → `master` cut time, but **before any feature/PR is presented to the operator for manual verification.** First deliverable is an explicit checklist grounded in REQUIREMENTS / DESIGN / PLAN.

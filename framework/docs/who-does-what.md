@@ -5,8 +5,11 @@ Lookup table for which actor owns each step in Bruno's pipeline.
 | Action                                            | Owner                                                       |
 | ------------------------------------------------- | ----------------------------------------------------------- |
 | Gather requirements from the operator             | Main agent (brief-first turn-by-turn interview, `requirements.md` playbook) |
+| Add a new phase to an existing project            | Main agent via `/new-phase` / `!new-phase` (`commands/new-phase.md`) |
+| Infer next phase number from existing REQUIREMENTS.md | `hooks/enforcement/new-phase-detect.sh` (UserPromptSubmit) |
 | Explore an unfamiliar codebase                    | System `Explore` agent (capital E)                          |
 | Write `docs/REQUIREMENTS.md`                      | Main agent (incremental, section by section)                |
+| Append `### Phase N+1` to §11 Phase Log           | Main agent (during `new-phase` mode interview)              |
 | Approve `docs/REQUIREMENTS.md`                    | Operator (gate before DESIGN/PLAN authoring)                |
 | Write `docs/DESIGN.md`                            | Main agent (`design.md`, after operator approves REQUIREMENTS) |
 | Write `docs/PLAN.md`                              | Main agent (`plan.md`, after operator approves REQUIREMENTS) |

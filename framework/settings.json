@@ -288,7 +288,8 @@
         "hooks": [
           { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/debugger-auto-invoke.sh" },
           { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/switch-project-detect.sh" },
-          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/new-project-detect.sh" }
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/new-project-detect.sh" },
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/new-phase-detect.sh" }
         ]
       }
     ],

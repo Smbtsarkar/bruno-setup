@@ -21,12 +21,17 @@ Audience: Bruno (the main agent). The interview is no longer delegated to a suba
 
 Pick mode at the start, surface it to the operator, and don't switch mid-interview:
 
-- **`fresh`** — full interview from blank slate. No existing REQUIREMENTS.md, or the operator chose full re-interview.
-- **`focused-update`** — read existing `docs/REQUIREMENTS.md`; ask only about the sections the operator named (e.g. "§3 Integrations" and "§5 Sources of Truth"). Skip the rest.
+- **`fresh`** — full interview from blank slate. No existing REQUIREMENTS.md, or the operator chose full re-interview. Triggered by `/new-project` or `!new-project`.
+- **`focused-update`** — read existing `docs/REQUIREMENTS.md`; ask only about the sections the operator named (e.g. "§3 Integrations" and "§5 Sources of Truth"). Skip the rest. Triggered when the operator asks to update specific REQUIREMENTS sections without adding a new phase.
+- **`new-phase`** — read existing `docs/REQUIREMENTS.md`; infer the next phase number from existing phase markers; conduct a focused **delta** interview for the new phase. Append to `## 11. Phase Log` AND update §1–§10 in place. Triggered by `/new-phase` or `!new-phase`. Full procedure in `framework/commands/new-phase.md`.
 
-For existing-project flows, **ask the operator which mode first** before the brief prompt: *"REQUIREMENTS.md exists. Focused update on specific sections, or full re-interview?"*
+For existing-project flows where the operator's intent is unclear, **ask first** before the brief prompt: *"REQUIREMENTS.md exists. Focused update on specific sections, add a new phase (`/new-phase`), or full re-interview?"*
 
-**Brief-first applies to both modes.** In `focused-update`, frame the brief prompt as: *"What's changed or what would you like to focus on?"*
+**Brief-first applies to all modes.** Frame the brief prompt per mode:
+
+- `fresh`: *"Before we dive in, share a brief: what are you building, who is it for, and what's the most important thing I should know going in?"*
+- `focused-update`: *"Quick brief first: what's changed since the last interview, or what would you like to focus on?"*
+- `new-phase`: *"Brief for Phase N+1 — what does this phase add, change, or cut? Free text. Please mark with `# Phase N+1:` at the top so we record the right phase number."* (N is the highest existing phase; see `framework/commands/new-phase.md` for inference logic.)
 
 ---
 
@@ -40,13 +45,29 @@ In `focused-update` mode:
 
 > *"Quick brief first: what's changed since the last interview, or what would you like to focus on?"*
 
+In `new-phase` mode (N is the highest existing phase, inferred per `framework/commands/new-phase.md`):
+
+> *"Brief for Phase N+1 — what does this phase add, change, or cut? Free text. Please mark with `# Phase N+1:` at the top so we record the right phase number."*
+
 **Wait for their reply. Don't ask other questions yet.**
 
-Once received, record verbatim as the first line of REQUIREMENTS.md:
+Once received, record verbatim:
 
-```html
-<!-- BRIEF: <verbatim operator reply> -->
-```
+- `fresh` mode → first line of REQUIREMENTS.md:
+  ```html
+  <!-- BRIEF: <verbatim operator reply> -->
+  ```
+
+  Recommended brief format (operator's free choice, but encouraged): pitch paragraph, then `# Phase 1:` followed by bulleted feature list, then any references / specifics. The `# Phase N:` heading inside the brief is what lets later `/new-phase` runs infer the next phase number.
+
+- `focused-update` mode → no new BRIEF marker; the existing one stays. Capture the operator's focus instructions in a transient note for your own use during the interview.
+
+- `new-phase` mode → inside the new `### Phase N+1 — <title>` subsection of §11 Phase Log:
+  ```html
+  <!-- BRIEF (Phase N+1): <verbatim operator reply> -->
+  ```
+
+  Same recommended format as fresh-mode briefs, but the `# Phase N+1:` heading is **mandatory** so the phase number is unambiguous. If the operator's brief doesn't include it, ask once for confirmation of the phase number.
 
 ---
 
@@ -69,6 +90,12 @@ Sections follow the REQUIREMENTS.md output-template order. Each entry below has:
 - The probe (what to ask if partial).
 - The skip condition (what counts as covered).
 - TBD acceptance criteria (what to accept after one probe).
+
+**In `new-phase` mode, scope the question script to deltas only.** For each section §1–§9, ask only one targeted phase-delta question first; skip the full cold question if the operator answers "no change to §X". Example:
+
+> *"Phase N+1 §3 Integrations — does this phase add a new external system, change an existing integration's auth model, or change credential ownership? If no, we'll skip §3."*
+
+If the operator says "yes, X changes", drop into the standard §3 cold/probe flow for the changed integration only. If "no", move on to §4. Track touched sections — the approval-gate summary lists them explicitly.
 
 ### §1 — Pitch + system topology
 
@@ -247,17 +274,40 @@ Populate `docs/REQUIREMENTS.md` with this structure. **Lay it down as a skeleton
 
 ## 10. License
 <SPDX identifier; LICENSE file ships separately>
+
+## 11. Phase Log
+<!-- Optional in fresh mode (created lazily on first `/new-phase`). Required once any `/new-phase` has run. -->
+
+Chronological record of phases added via `/new-phase`. Each phase keeps its verbatim brief and a delta summary. The capability/integration/install/data details land in §1–§10 in place; this section is the brief archive + diff trail.
+
+### Phase 1 — <inferred or "original baseline">
+<!-- BRIEF (Phase 1): <copy from the top-of-file `<!-- BRIEF: ... -->` if it exists, OR "(see top-of-file BRIEF marker)"> -->
+Delta: original `/new-project` baseline; see §1–§10 for full surface.
+
+### Phase 2 — <short title>
+<!-- BRIEF (Phase 2): <verbatim operator brief for Phase 2> -->
+Delta:
+- Added CAP-2.001, CAP-2.002.
+- New integration INT-XYZ (see §3.N).
+- Install: added step 5 in §4.
+- Sources of truth: 2 new rows in §5.
+- Data: schema change to <table> in §7.
+- Out-of-scope (Phase 2): <list>.
 ```
 
 **TBDs** go inline as `<!-- TBD: <one-line reason> -->` markers. They also get listed in the approval-gate summary handed back to the operator (see §8 below).
 
 The **mandatory** sections are §4 (install walkthrough) and §5 (sources of truth). Their absence is a release blocker per master CLAUDE.md §7. If they cannot be populated, stop the interview and surface the blocker — do not advance to DESIGN/PLAN.
 
+**§11 Phase Log** is **mandatory once any `/new-phase` has run** — it's the brief archive that future `/new-phase` runs scan to infer the next phase number. Don't delete or rewrite past phase entries; append only.
+
 ---
 
 ## 8. Approval gate
 
-After all sections are populated (or marked TBD), surface a single concise summary to the operator and pause:
+After all sections are populated (or marked TBD), surface a single concise summary to the operator and pause.
+
+**Fresh mode summary:**
 
 ```
 REQUIREMENTS.md populated, N of 11 sections complete.
@@ -269,7 +319,23 @@ Recommend: approve and resolve <blocking TBD> before DESIGN.md, OR revise specif
 
 Then ask: *"Approve REQUIREMENTS.md and proceed to DESIGN/PLAN? Or revise specific sections?"*
 
-- On **approve** → author `docs/DESIGN.md` (only if external integrations were declared in §3) and `docs/PLAN.md`, per their playbooks (`design.md`, `plan.md`).
+**New-phase mode summary:**
+
+```
+Phase N+1 captured in §11.
+New capabilities: CAP-N+1.001, CAP-N+1.002, ...
+Touched sections: §3 (new integration INT-XXX), §4 (added step 5), §5 (added 2 rows), §7 (schema change).
+Untouched: §1, §2 pitch, §6, §8, §9, §10.
+TBDs (new):
+  - §<X>: <one-line reason>
+Recommend: approve and proceed to DESIGN/PLAN deltas, OR revise specific sections.
+```
+
+Then ask: *"Approve Phase N+1 in REQUIREMENTS.md and proceed to DESIGN/PLAN updates? Or revise specific sections?"*
+
+**Branching on the operator's answer (both modes):**
+
+- On **approve** → author `docs/DESIGN.md` (or DESIGN deltas in new-phase mode — only if the phase changed lifecycles, sources of truth, or error contracts) and `docs/PLAN.md` (or a new `## Phase N+1` section appended in new-phase mode), per their playbooks (`design.md`, `plan.md`).
 - On **revise** → re-enter interview mode for the named sections only; do not redo sections the operator didn't touch.
 - On **silence / rejection** → stay where you are. Do not advance to DESIGN/PLAN authoring without explicit approval.
 

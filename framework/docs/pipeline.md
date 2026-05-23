@@ -24,6 +24,20 @@ The requirements interview is **not** a subagent — it runs on main agent per `
 
 ---
 
+## Triggers for the requirements interview
+
+Three flows enter requirements-interview mode, all on main agent:
+
+| Trigger | Mode | What it does |
+|---------|------|--------------|
+| `/new-project <name>` or `!new-project <name>` | `fresh` | Bootstrap a project from scratch. Full §1–§10 interview. See `Standard pipeline for /new-project` below. |
+| `/new-phase` or `!new-phase` | `new-phase` | Add a Phase N+1 entry to existing REQUIREMENTS.md §11 Phase Log + delta edits to §1–§10. Procedure in `~/.claude/commands/new-phase.md`. See `Pipeline for /new-phase` below. |
+| Operator asks to update existing REQUIREMENTS.md (e.g. "the auth model changed") | `focused-update` | Re-enter interview for only the named sections. No new phase appended. |
+
+The mode is **declared up front** and does not switch mid-interview. For existing projects where intent is unclear, ask: *"Focused update on specific sections, add a new phase, or full re-interview?"*
+
+---
+
 ## Standard pipeline for `/new-project`
 
 ```
@@ -46,6 +60,36 @@ Operator: /new-project <name>  (or !new-project <name>)
 ```
 
 The interview, DESIGN authoring, and PLAN authoring all share the same main-agent context — no subagent hand-off, no re-explaining the brief. This keeps the synthesis work cohesive at the cost of more Opus tokens in the interview phase (acceptable; interviews are infrequent).
+
+---
+
+## Pipeline for `/new-phase`
+
+```
+Operator: /new-phase  (or !new-phase)
+  → Bruno verifies docs/REQUIREMENTS.md exists; pre-flight (not on master/dev)
+  → Bruno infers next phase N+1 from existing phase markers in REQUIREMENTS.md
+    (highest of: `# Phase X:` in BRIEF markers, `### Phase X` in §11, CAP-X.Y prefixes)
+  → Bruno confirms Phase N+1 with operator
+  → Bruno bootstraps §11 Phase Log if missing (captures original BRIEF as Phase 1)
+  → Bruno asks for the phase-tagged brief (operator marks `# Phase N+1:` in their reply)
+  → Bruno records BRIEF (Phase N+1) verbatim under `### Phase N+1` in §11
+  → Bruno conducts focused delta interview (scoped to sections this phase touches)
+  → Bruno updates §1–§10 in place AND §11.Phase N+1 delta summary in parallel
+  → Bruno surfaces delta summary + TBDs to operator (approval gate)
+  → operator approves (or asks for revisions → re-enter delta mode for named sections)
+  → DESIGN.md DELTA authoring (main, ONLY if phase changed lifecycles/sources-of-truth/error contracts)
+  → PLAN.md delta authoring (main; appends a new `## Phase N+1` section)
+  → NO scaffolder (project already scaffolded)
+  → (Coder → main-agent sync gate → Reviewer (per-phase) loop)
+  → Reviewer (comprehensive, incl. e2e exercise + adjacent-surface scan)
+  → Docs
+  → PR
+  → user approval
+  → merge
+```
+
+Full procedure in `~/.claude/commands/new-phase.md` and `~/.claude/docs/requirements.md` §2 (`new-phase` mode) / §5 (delta question script) / §8 (new-phase approval gate).
 
 ---
 
