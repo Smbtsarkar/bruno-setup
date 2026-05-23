@@ -81,7 +81,8 @@
 
     "ask": [
       "Bash(git push --force*)", "Bash(git push -f*)",
-      "Bash(git push *master*)", "Bash(git push *main*)",
+      "Bash(git push *master*)", "Bash(git push *main*)", "Bash(git push *dev*)",
+      "Bash(*git push origin HEAD:master*)", "Bash(*git push origin HEAD:dev*)", "Bash(*git push origin HEAD:main*)",
       "Bash(git reset --hard*)",
       "Bash(git branch -D*)", "Bash(git branch -d*)",
       "Bash(git rebase --interactive*)", "Bash(git rebase -i*)",
@@ -103,7 +104,8 @@
       "Bash(sudo *)",
 
       "PowerShell(*git push --force*)", "PowerShell(*git push -f*)",
-      "PowerShell(*git push *master*)", "PowerShell(*git push *main*)",
+      "PowerShell(*git push *master*)", "PowerShell(*git push *main*)", "PowerShell(*git push *dev*)",
+      "PowerShell(*git push origin HEAD:master*)", "PowerShell(*git push origin HEAD:dev*)", "PowerShell(*git push origin HEAD:main*)",
       "PowerShell(*git reset --hard*)",
       "PowerShell(*git branch -D*)", "PowerShell(*git branch -d*)",
       "PowerShell(*git rebase -i*)", "PowerShell(*git rebase --interactive*)",
@@ -164,13 +166,6 @@
       "Bash(*ANTHROPIC_API_KEY=*)",
       "Bash(*set ANTHROPIC_API_KEY*)",
 
-      "Bash(*git push origin master*)",
-      "Bash(*git push origin dev*)",
-      "Bash(*git push origin main*)",
-      "Bash(*git push origin HEAD:master*)",
-      "Bash(*git push origin HEAD:dev*)",
-      "Bash(*git push origin HEAD:main*)",
-
       "Bash(*sudo rm *)",
       "Bash(*sudo dd *)",
       "Bash(*sudo chmod -R *)",
@@ -196,13 +191,6 @@
       "PowerShell(*$env:ANTHROPIC_API_KEY*)",
       "PowerShell(*Set-Item Env:ANTHROPIC_API_KEY*)",
       "PowerShell(*[Environment]::SetEnvironmentVariable*ANTHROPIC_API_KEY*)",
-
-      "PowerShell(*git push origin master*)",
-      "PowerShell(*git push origin dev*)",
-      "PowerShell(*git push origin main*)",
-      "PowerShell(*git push origin HEAD:master*)",
-      "PowerShell(*git push origin HEAD:dev*)",
-      "PowerShell(*git push origin HEAD:main*)",
 
       "Write(/etc/**)", "Write(/var/**)", "Write(/usr/**)", "Write(/opt/**)",
       "Write(/proc/**)", "Write(/sys/**)", "Write(/dev/**)", "Write(/root/**)",
