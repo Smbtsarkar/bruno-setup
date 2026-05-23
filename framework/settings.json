@@ -202,7 +202,12 @@
       "PowerShell(*git push origin main*)",
       "PowerShell(*git push origin HEAD:master*)",
       "PowerShell(*git push origin HEAD:dev*)",
-      "PowerShell(*git push origin HEAD:main*)"
+      "PowerShell(*git push origin HEAD:main*)",
+
+      "Write(/etc/**)", "Write(/var/**)", "Write(/usr/**)", "Write(/opt/**)",
+      "Write(/proc/**)", "Write(/sys/**)", "Write(/dev/**)", "Write(/root/**)",
+      "Edit(/etc/**)", "Edit(/var/**)", "Edit(/usr/**)", "Edit(/opt/**)",
+      "Edit(/proc/**)", "Edit(/sys/**)", "Edit(/dev/**)", "Edit(/root/**)"
     ]
   },
 
@@ -260,6 +265,12 @@
             "if": "Bash(git commit *)"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/workspace-write-block.sh" }
+        ]
       }
     ],
 
@@ -275,13 +286,20 @@
         "hooks": [
           { "type": "command", "command": "bash $HOME/.claude/hooks/audit/destructive-op-log.sh" }
         ]
+      },
+      {
+        "matcher": "Read|Glob|Grep",
+        "hooks": [
+          { "type": "command", "command": "bash $HOME/.claude/hooks/audit/workspace-cross-read-log.sh" }
+        ]
       }
     ],
 
     "UserPromptSubmit": [
       {
         "hooks": [
-          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/debugger-auto-invoke.sh" }
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/debugger-auto-invoke.sh" },
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/switch-project-detect.sh" }
         ]
       }
     ],

@@ -70,6 +70,34 @@ Same sync runs; same backup behaviour.
 
 ---
 
+## Workspace conventions
+
+Bruno operates under a single workspace root: **`~/workspace-bruno/`** (override via env var `CLAUDE_WORKSPACE_ROOT`). All projects live directly under it — `~/workspace-bruno/citadel/`, `~/workspace-bruno/garuda/`, etc.
+
+The framework restricts Bruno's **Write/Edit** operations to this workspace (load-bearing blast-radius constraint per `framework/CLAUDE.md` §26). **Read/Glob/Grep** remain broad (system inspection still works) with audit logging on cross-workspace reads. **Bash execution** stays permitted via the existing allow patterns; `cd` between projects is gated by the `/switch-project` flow.
+
+### Project switching
+
+Bruno cannot switch its active project autonomously. Two equivalent operator-driven flows:
+
+- **`/switch-project <name>`** — Claude Code CLI slash command. See `framework/commands/switch-project.md`.
+- **`!switch-project <name>`** — Text-pattern form for non-CLI interfaces (Discord channels via Citadel-style harness, etc.). Detected by `framework/hooks/enforcement/switch-project-detect.sh`.
+
+Both surface the same Bruno-handled flow: validate the target, ask the operator to confirm, then `cd` on approval.
+
+### Migration from `~/Projects/`
+
+```bash
+mkdir -p ~/workspace-bruno
+mv ~/Projects/* ~/workspace-bruno/
+# Optional: symlink during transition
+ln -s ~/workspace-bruno/citadel ~/Projects/citadel
+```
+
+Or override the default if you want a different root: `export CLAUDE_WORKSPACE_ROOT=/path/to/your/root`.
+
+---
+
 ## Shell discipline (cross-platform)
 
 The framework is designed to work on Linux, macOS, and Windows. The shell-discipline rule (`framework/CLAUDE.md` §25) says:

@@ -123,14 +123,17 @@ The framework uses SIX layers to block patterns like `cd /tmp && rm -rf /` or `c
 | `project-root-bash.sh` | `PreToolUse` | `Bash` | Blocks `cd /<abs>` outside project root |
 | `relative-path-check.sh` | `PreToolUse` | `Bash` | Warns (doesn't block) on absolute paths in args |
 | `pre-commit-installed.sh` | `PreToolUse` | `Bash`, `if: Bash(git commit *)` | Blocks git commit if pre-commit hook not installed but config exists |
+| `workspace-write-block.sh` | `PreToolUse` | `Edit\|Write` | Hard-blocks Write/Edit outside `~/workspace-bruno/` (workspace-bruno blast-radius constraint per CLAUDE.md §26) |
 | `debugger-auto-invoke.sh` | `UserPromptSubmit` | — | Detects pasted error output; injects "spawn debugger" reminder |
+| `switch-project-detect.sh` | `UserPromptSubmit` | — | Detects `/switch-project` and `!switch-project` text patterns; injects validation + approval-gate context |
 | `doc-drift-reminder.sh` | `PostToolUse` | `Edit\|Write` | Reminds to update REQUIREMENTS/DESIGN/README when doc-tracked file is edited |
-| `cwd-escape-block.sh` | `CwdChanged` | — | Blocks CWD changes outside project root |
+| `cwd-escape-block.sh` | `CwdChanged` | — | Allows cd within current project; blocks cd outside workspace or to sibling projects (sibling switch requires `/switch-project`) |
 
 ### audit/
 | Script | Hook event | Matcher | Purpose |
 |--------|-----------|---------|---------|
 | `destructive-op-log.sh` | `PostToolUse` | `Bash` | Appends one line to `~/.claude/audit/destructive-ops.log` for any destructive op that ran |
+| `workspace-cross-read-log.sh` | `PostToolUse` | `Read\|Glob\|Grep` | Logs reads of paths outside `~/workspace-bruno/` to `~/.claude/audit/cross-workspace-reads.log` (audit only; doesn't block) |
 | `task-stale-on-stop.sh` | `Stop` | — | At end of turn, reminds about any in_progress tasks |
 
 ---
