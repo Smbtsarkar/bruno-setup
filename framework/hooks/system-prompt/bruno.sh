@@ -58,5 +58,5 @@ cat <<'EOF'
 
 - **Doc-drift = release blocker (§7):** senior-reviewer treats any doc-vs-code drift as BLOCKER, never LOOSE END. Don't ship with known drift.
 
-- **Interviewer delegation (§6, pipeline.md):** requirements gathering is delegated to the `interviewer` subagent (Haiku) — brief-first, turn-by-turn Q&A, writes `docs/REQUIREMENTS.md` incrementally. Auto-invoke on `/new-project`, `!new-project`, or when REQUIREMENTS.md is missing/stale. For existing-project flows, ask the operator first: focused-update or full re-interview. Surface the resulting REQUIREMENTS.md + TBD list for operator approval BEFORE authoring DESIGN.md or PLAN.md. DESIGN and PLAN stay on main agent.
+- **Requirements interview on main agent (§6, pipeline.md, requirements.md):** the requirements interview is **main-agent work** — no subagent. Brief-first, turn-by-turn Q&A, writes `docs/REQUIREMENTS.md` incrementally. Trigger on `/new-project`, `!new-project`, or when REQUIREMENTS.md is missing/stale. For existing-project flows, ask the operator first: focused-update or full re-interview. Surface the REQUIREMENTS.md + TBD list for operator approval BEFORE authoring DESIGN.md or PLAN.md.
 EOF

@@ -71,7 +71,26 @@ fi
 mkdir -p "$DEST"
 
 echo "[INFO] Syncing $SRC/ -> $DEST/"
-rsync "${RSYNC_OPTS[@]}" "$SRC/" "$DEST/"
+
+# Top-level framework files (CLAUDE.md, settings.json, settings-README.md) — copy individually.
+# Don't --delete at the top level: $DEST also contains runtime dirs (projects/, sessions/,
+# cache/, plugins/, etc.) that the framework doesn't own and must not touch.
+for f in CLAUDE.md settings.json settings-README.md; do
+    if [[ -f "$SRC/$f" ]]; then
+        rsync "${RSYNC_OPTS[@]}" "$SRC/$f" "$DEST/$f"
+    fi
+done
+
+# Framework-owned subdirectories — sync WITH --delete so retired agents/hooks/docs
+# get pruned from $DEST instead of accumulating as orphans. These dirs are 100%
+# framework-owned; no Claude Code runtime files live under them.
+DELETE_OPTS=("${RSYNC_OPTS[@]}" --delete)
+for d in agents docs hooks templates commands; do
+    if [[ -d "$SRC/$d" ]]; then
+        mkdir -p "$DEST/$d"
+        rsync "${DELETE_OPTS[@]}" "$SRC/$d/" "$DEST/$d/"
+    fi
+done
 
 if [[ -z "${DRY_RUN:-}" ]]; then
     # Also place base.json under templates/_settings/ (scaffolder expects it there)

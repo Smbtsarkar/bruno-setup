@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # UserPromptSubmit hook
 # Detects /new-project and !new-project patterns in the user prompt and
-# injects context for Bruno to run the new-project flow (interviewer first,
-# then DESIGN/PLAN on operator approval).
+# injects context for Bruno to run the new-project flow (requirements
+# interview on main agent, then DESIGN/PLAN on operator approval).
 #
 # /new-project — Claude Code CLI slash command; handled natively by the CLI.
 #                This hook still detects the text form for non-CLI interfaces
@@ -60,12 +60,12 @@ Validation:
 Per the bootstrap flow:
 1. Confirm the new-project target with the operator (especially if the directory exists and is non-empty).
 2. Create \`$TARGET_PATH\` if missing.
-3. Invoke the \`interviewer\` subagent (Haiku) with mode: fresh. Interviewer's FIRST turn asks the operator for a brief, then runs turn-by-turn Q&A, writing \`docs/REQUIREMENTS.md\` at the end.
-4. Surface the populated REQUIREMENTS.md + interviewer's TBD list for operator approval.
+3. Run the requirements interview yourself per \`~/.claude/docs/requirements.md\` — mode: fresh. Your FIRST turn asks the operator for a brief, then turn-by-turn Q&A, writing \`docs/REQUIREMENTS.md\` incrementally.
+4. Surface the populated REQUIREMENTS.md + TBD list for operator approval (per requirements.md §8).
 5. ONLY on approval: author DESIGN.md (if external integrations declared) and PLAN.md.
 6. Invoke \`scaffolder\` with the approved docs.
 
 Do NOT scaffold, write DESIGN.md, write PLAN.md, or invoke coder/reviewer before the operator approves REQUIREMENTS.md. Requirements approval is the load-bearing gate.
 
-If the target directory exists and is non-empty, stop and ask the operator how to proceed (overwrite, pick a different name, etc.) before invoking the interviewer.
+If the target directory exists and is non-empty, stop and ask the operator how to proceed (overwrite, pick a different name, etc.) before starting the interview.
 EOF

@@ -4,9 +4,9 @@ Lookup table for which actor owns each step in Bruno's pipeline.
 
 | Action                                            | Owner                                                       |
 | ------------------------------------------------- | ----------------------------------------------------------- |
-| Gather requirements from the operator             | `interviewer` (Haiku, brief-first turn-by-turn Q&A)         |
+| Gather requirements from the operator             | Main agent (brief-first turn-by-turn interview, `requirements.md` playbook) |
 | Explore an unfamiliar codebase                    | System `Explore` agent (capital E)                          |
-| Write `docs/REQUIREMENTS.md`                      | `interviewer` (incremental, section by section)             |
+| Write `docs/REQUIREMENTS.md`                      | Main agent (incremental, section by section)                |
 | Approve `docs/REQUIREMENTS.md`                    | Operator (gate before DESIGN/PLAN authoring)                |
 | Write `docs/DESIGN.md`                            | Main agent (`design.md`, after operator approves REQUIREMENTS) |
 | Write `docs/PLAN.md`                              | Main agent (`plan.md`, after operator approves REQUIREMENTS) |

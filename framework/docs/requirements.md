@@ -1,38 +1,38 @@
-# Interviewer playbook
+# Requirements interview playbook
 
-This doc is the **playbook for the `interviewer` subagent** (Haiku). It defines the brief-first flow, turn-by-turn question script, REQUIREMENTS.md output template, and the return contract to Bruno.
+This doc is **Bruno's playbook for running the requirements interview himself.** It defines the brief-first flow, turn-by-turn question script, and the REQUIREMENTS.md output template.
 
-Audience: the Interviewer agent. Not the operator. (For the operator's view of the new-project flow, see `~/.claude/commands/new-project.md`.)
+Audience: Bruno (the main agent). The interview is no longer delegated to a subagent — Bruno conducts it directly, then authors DESIGN.md and PLAN.md from the same context once the operator approves what was captured.
 
 ---
 
 ## 1. Role and pacing
 
-- **You are the Interviewer.** You produce `docs/REQUIREMENTS.md`. You don't write DESIGN.md or PLAN.md — Bruno (main agent) owns those, after the operator approves what you produced.
-- **Brief-first.** Your first message to the operator is always the brief prompt (§3 below). Wait for the operator's reply. Record it verbatim.
+- **Brief-first.** The first message to the operator is always the brief prompt (§3 below). Wait for the operator's reply. Record it verbatim.
 - **Turn-by-turn.** One focused question per turn. After each operator answer, summarize in one line ("So: <X>. Moving on."), then ask the next question. No batching, no multi-part questions.
 - **Probe vague answers exactly once.** Second-pass vague = accept as TBD and move on.
 - **Operator owns the pace.** "Skip this section", "let me revise §2", "I want to stop here" — all valid. Adapt.
 - **Write incrementally — section by section.** After the brief arrives, do a single `Write` to lay down the skeleton (brief marker + empty section headers + WIP marker on §1). From there, `Edit` the file as soon as each section's Q&A is done. Never let two completed sections accumulate before writing. The whole point is that mid-interview missteps don't lose prior work.
+- **Stay in interview mode until the operator approves §10.** Do not slip into DESIGN/PLAN authoring mid-interview, even if the answers are obviously sufficient. The approval gate is load-bearing.
 
 ---
 
 ## 2. Operating modes
 
-Bruno tells you which mode to use in its brief:
+Pick mode at the start, surface it to the operator, and don't switch mid-interview:
 
 - **`fresh`** — full interview from blank slate. No existing REQUIREMENTS.md, or the operator chose full re-interview.
-- **`focused-update`** — read existing `<project_path>/docs/REQUIREMENTS.md`; ask only about the sections Bruno named (e.g. `["§3 Integrations", "§5 Sources of Truth"]`). Skip the rest.
+- **`focused-update`** — read existing `docs/REQUIREMENTS.md`; ask only about the sections the operator named (e.g. "§3 Integrations" and "§5 Sources of Truth"). Skip the rest.
+
+For existing-project flows, **ask the operator which mode first** before the brief prompt: *"REQUIREMENTS.md exists. Focused update on specific sections, or full re-interview?"*
 
 **Brief-first applies to both modes.** In `focused-update`, frame the brief prompt as: *"What's changed or what would you like to focus on?"*
-
-Don't switch modes mid-interview.
 
 ---
 
 ## 3. Brief intake
 
-Your first message to the operator, **verbatim** (fresh mode):
+The first message to the operator, **verbatim** (fresh mode):
 
 > *"Before we dive in, share a brief: what are you building, who is it for, and what's the most important thing I should know going in? Free text — as much or as little as you want."*
 
@@ -102,7 +102,7 @@ For **each** external system the operator names (Discord, Slack, Google APIs, OA
 
 **TBD if:** any of {auth model, credential owner, missing-credential behaviour} can't be answered after one probe. Mark inline and surface in `open_questions` — DESIGN.md §Lifecycles cannot be written without these.
 
-**Operator says no integrations:** confirm explicitly ("So no external systems — no Discord, no databases beyond what your runtime gives you, nothing?"). If confirmed, §3 is "(none)" and skip DESIGN.md prep entirely (Bruno decides on DESIGN.md based on this).
+**Operator says no integrations:** confirm explicitly ("So no external systems — no Discord, no databases beyond what your runtime gives you, nothing?"). If confirmed, §3 is "(none)" and DESIGN.md is not required (per CLAUDE.md §1, DESIGN.md is only mandatory when external integrations are declared).
 
 ### §4 — Operator Install & First-Run Experience (MANDATORY)
 
@@ -190,7 +190,7 @@ This section is **mandatory** — missing this is how projects ship source-of-tr
 
 ## 6. Anti-questions (NEVER ask)
 
-These are planner / scaffolder concerns. If the operator asks YOU about them, defer with: *"That's the planner's call; I'll record any preference you have, but the default-picking happens in PLAN.md."*
+These are planner / scaffolder concerns. If the operator asks about them during the interview, defer with: *"That's the planner's call; I'll record any preference you have, but the default-picking happens in PLAN.md."*
 
 - ❌ Exact library versions (e.g. "should we use FastAPI 0.110 or 0.115?")
 - ❌ Exact file paths inside the project (e.g. "should config live in `src/config/` or `app/config/`?")
@@ -205,7 +205,7 @@ If the operator volunteers a preference (e.g. "I want to use Postgres" or "no Fa
 
 ## 7. REQUIREMENTS.md output template
 
-Populate `<project_path>/docs/REQUIREMENTS.md` with this structure. **Lay it down as a skeleton immediately after the brief arrives** (with all section headers present but bodies empty, plus a `<!-- WIP: <section> -->` marker on whichever section you're currently filling). `Edit` each section as soon as its Q&A is done.
+Populate `docs/REQUIREMENTS.md` with this structure. **Lay it down as a skeleton immediately after the brief arrives** (with all section headers present but bodies empty, plus a `<!-- WIP: <section> -->` marker on whichever section is currently being filled). `Edit` each section as soon as its Q&A is done.
 
 ```markdown
 <!-- BRIEF: <verbatim operator brief from first turn> -->
@@ -249,52 +249,28 @@ Populate `<project_path>/docs/REQUIREMENTS.md` with this structure. **Lay it dow
 <SPDX identifier; LICENSE file ships separately>
 ```
 
-**TBDs** go inline as `<!-- TBD: <one-line reason> -->` markers. They also get listed in `sections_tbd` in your return YAML.
+**TBDs** go inline as `<!-- TBD: <one-line reason> -->` markers. They also get listed in the approval-gate summary handed back to the operator (see §8 below).
 
-The **mandatory** sections are §4 (install walkthrough) and §5 (sources of truth). Their absence is a release blocker per master CLAUDE.md §7. If you can't populate them, return Shape `blocked` with a clear reason.
+The **mandatory** sections are §4 (install walkthrough) and §5 (sources of truth). Their absence is a release blocker per master CLAUDE.md §7. If they cannot be populated, stop the interview and surface the blocker — do not advance to DESIGN/PLAN.
 
 ---
 
-## 8. Return contract
+## 8. Approval gate
 
-Return to Bruno as YAML:
+After all sections are populated (or marked TBD), surface a single concise summary to the operator and pause:
 
-```yaml
-status: complete | blocked
-mode: fresh | focused-update
-brief: |
-  <verbatim operator brief from first turn>
-requirements_path: docs/REQUIREMENTS.md
-sections_populated:
-  - "§0 Conventions"
-  - "§1 System Topology"
-  - "§2 Capabilities"
-  - ...
-sections_tbd:
-  - section: "§3.2 OAuth credential ownership"
-    reason: "operator unsure who produces token.json; needs decision before DESIGN.md"
-summary_for_operator: |
-  2–3 lines: what was covered, what's TBD, recommended next step.
-  Example: "REQUIREMENTS.md populated, 9 of 11 sections complete. 2 TBDs — OAuth ownership (§3.2) and data layer (§7). Recommend approving and resolving the OAuth TBD before DESIGN.md."
-open_questions:
-  - "OAuth credential ownership undefined — blocks DESIGN.md §Lifecycles."
-blocked_reason: <only if status == blocked>
+```
+REQUIREMENTS.md populated, N of 11 sections complete.
+TBDs:
+  - §<X>: <one-line reason>
+  - §<Y>: <one-line reason>
+Recommend: approve and resolve <blocking TBD> before DESIGN.md, OR revise specific sections.
 ```
 
-Mandatory fields:
-- `status`
-- `mode`
-- `brief` (verbatim)
-- `requirements_path`
-- `sections_populated`
-- `summary_for_operator`
-- `open_questions` (empty list if none)
+Then ask: *"Approve REQUIREMENTS.md and proceed to DESIGN/PLAN? Or revise specific sections?"*
 
-Bruno will:
-1. Quote `summary_for_operator` verbatim to the operator.
-2. List `sections_tbd`.
-3. Ask the operator to approve or revise specific sections.
-4. On approve → author DESIGN.md (if integrations declared in §3) and PLAN.md.
-5. On revise → re-invoke you with a delta brief.
+- On **approve** → author `docs/DESIGN.md` (only if external integrations were declared in §3) and `docs/PLAN.md`, per their playbooks (`design.md`, `plan.md`).
+- On **revise** → re-enter interview mode for the named sections only; do not redo sections the operator didn't touch.
+- On **silence / rejection** → stay where you are. Do not advance to DESIGN/PLAN authoring without explicit approval.
 
-Stop after returning the YAML. Don't author DESIGN.md, don't author PLAN.md, don't invoke other agents.
+The approval gate is load-bearing. The whole point of running the interview as a distinct phase — rather than synthesizing requirements from a one-shot operator brief — is that the operator gets a chance to see the captured shape before any design or plan ossifies around it.

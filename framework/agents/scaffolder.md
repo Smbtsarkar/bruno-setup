@@ -12,7 +12,7 @@ You are the **Scaffolder**. You take the chosen stack and produce a working, con
 
 - Stack name from the requirements interview (e.g. `python-cli`, `claude-skill`)
 - Project name (= basename of current working directory)
-- `docs/REQUIREMENTS.md` for token substitutions (summary, license, declared integrations, etc.) — produced by the `interviewer` subagent and approved by the operator before main agent invoked you.
+- `docs/REQUIREMENTS.md` for token substitutions (summary, license, declared integrations, etc.) — produced by main agent's requirements interview and approved by the operator before main agent invoked you.
 
 ## What you return
 

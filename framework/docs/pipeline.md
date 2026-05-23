@@ -2,7 +2,7 @@
 
 Bruno's main agent orchestrates the engineering pipeline. Specialized subagents handle distinct phases; main agent **auto-invokes** them based on context — the operator does not need to ask.
 
-Requirements gathering is delegated to the `interviewer` subagent (Haiku) — turn-by-turn Q&A, brief-first, produces `docs/REQUIREMENTS.md`. Planning is still **main-agent work** — main agent authors DESIGN.md and PLAN.md per their playbooks, after the operator approves what the Interviewer produced.
+Requirements gathering, DESIGN authoring, and PLAN authoring are **main-agent work**. Bruno runs the requirements interview himself (turn-by-turn Q&A, brief-first, produces `docs/REQUIREMENTS.md`), then authors DESIGN.md and PLAN.md per their playbooks once the operator approves what was captured.
 
 ---
 
@@ -13,13 +13,14 @@ Full definitions live in `~/.claude/agents/`. Quick reference:
 | Agent             | Role                                                                                                                                                                                                                                                                                          |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Explore` (system) | Read-only codebase exploration. **Use the Claude Code system `Explore` agent** (capital E). Do not use a custom `explorer` — that pattern has been retired.                                                                                                                                  |
-| `interviewer`     | (Haiku) Brief-first, turn-by-turn requirements interview. Produces `docs/REQUIREMENTS.md` incrementally (section-by-section, so mid-interview missteps don't lose prior work). Auto-invoked for `/new-project`, `!new-project`, or when REQUIREMENTS.md is missing/stale                       |
 | `scaffolder`      | Copies templates from `~/.claude/templates/<stack>/` and customizes                                                                                                                                                                                                                           |
 | `coder`           | Implements PLAN.md phases, writes unit + integration tests, Bruno collections, and the CI workflow. Commits per phase. Output contract includes `summary_for_operator` (see Sync gate below)                                                                                                  |
 | `reviewer`        | Code review (style, security, tests, perf, architecture/design) — per-phase quick review and pre-PR comprehensive review. Comprehensive mode also (a) drives the built artifact end-to-end and (b) scans for adjacent surfaces with the same root cause as the brief's reported bug          |
 | `senior-reviewer` | Final pre-release review — verifies code matches PLAN.md / REQUIREMENTS.md / DESIGN.md, re-runs every quality gate, sweeps for loose ends, runs install-walkthrough. Read-only. Returns a single verdict (READY-TO-MERGE / NEEDS-WORK / BLOCKED). Auto-invoked before any `dev` → `master` PR |
 | `debugger`        | Diagnose-only; reports root cause + suggested fix. **Auto-invoked on any operator-reported error output** — see Debugger auto-invoke below                                                                                                                                                    |
 | `docs`            | Owns README, CHANGELOG, API docs, architecture/usage guides, inline comments. `drift_found` is a mandatory return field — flags any doc-vs-code mismatch for coder                                                                                                                            |
+
+The requirements interview is **not** a subagent — it runs on main agent per `~/.claude/docs/requirements.md`.
 
 ---
 
@@ -28,12 +29,11 @@ Full definitions live in `~/.claude/agents/`. Quick reference:
 ```
 Operator: /new-project <name>  (or !new-project <name>)
   → Bruno validates target, confirms with operator
-  → Bruno invokes `interviewer` (mode: fresh)
-    → Interviewer asks for brief
-    → Interviewer turn-by-turn Q&A, brief-aware, writing REQUIREMENTS.md incrementally
-    → Interviewer returns YAML with summary_for_operator + sections_tbd
-  → Bruno surfaces REQUIREMENTS.md + TBD list to operator (approval gate)
-  → operator approves (or asks for revisions → re-invoke interviewer with delta brief)
+  → Bruno runs the requirements interview directly (per requirements.md playbook)
+    → Bruno asks for the brief
+    → Bruno turn-by-turn Q&A, brief-aware, writing REQUIREMENTS.md incrementally
+    → Bruno surfaces summary + TBD list to operator (approval gate)
+  → operator approves (or asks for revisions → re-enter interview mode for named sections only)
   → DESIGN.md authoring (main, per design.md playbook — REQUIRED if external integrations declared)
   → Plan (main, per plan.md playbook)
   → Scaffolder
@@ -45,7 +45,7 @@ Operator: /new-project <name>  (or !new-project <name>)
   → merge
 ```
 
-Interviewer is a Haiku subagent (cost optimisation; the interview is pure Q&A). DESIGN and PLAN authoring stay on main agent (Opus) because they're synthesis work that benefits from the larger model.
+The interview, DESIGN authoring, and PLAN authoring all share the same main-agent context — no subagent hand-off, no re-explaining the brief. This keeps the synthesis work cohesive at the cost of more Opus tokens in the interview phase (acceptable; interviews are infrequent).
 
 ---
 
@@ -68,7 +68,7 @@ Once pre-flight passes:
 
 1. Check whether `docs/REQUIREMENTS.md`, `docs/DESIGN.md`, `docs/PLAN.md`, and `docs/ARCHITECTURE.md` exist and look current.
 2. If any are missing or look stale → invoke `Explore` to map the codebase and report findings inline.
-3. If requirements are unclear after exploration → ask the operator: focused-update (Interviewer reads existing REQUIREMENTS.md and asks only about the unclear sections) or full re-interview (Interviewer starts from scratch). Invoke `interviewer` with the chosen mode. Surface its result for operator approval before proceeding.
+3. If requirements are unclear after exploration → ask the operator: focused-update (re-enter interview mode for only the unclear sections) or full re-interview (start from scratch per `requirements.md`). Surface the resulting REQUIREMENTS.md for operator approval before proceeding.
 4. If no plan exists (or the existing one doesn't cover the new ask) → write or update `docs/PLAN.md` per `plan.md` and get the operator's approval before proceeding.
 5. Then proceed with `coder` → **sync gate to operator** → `reviewer` (per-phase quick) → repeat for next phase → `reviewer` (comprehensive, incl. e2e exercise + adjacent-surface scan) → `docs` (only if PR-bound) → `gh pr create --base dev` → approval → `gh pr merge --squash --delete-branch`.
 6. `debugger` is auto-invoked any time main agent observes a stack trace or unexpected non-zero exit during a run/test, OR whenever the operator pastes/references error output (see Debugger auto-invoke below).
