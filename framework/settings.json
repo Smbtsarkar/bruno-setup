@@ -237,6 +237,10 @@
       {
         "matcher": "scaffolder",
         "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/scaffolder.sh" }]
+      },
+      {
+        "matcher": "interviewer",
+        "hooks": [{ "type": "command", "command": "bash $HOME/.claude/hooks/system-prompt/interviewer.sh" }]
       }
     ],
 
@@ -287,7 +291,8 @@
       {
         "hooks": [
           { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/debugger-auto-invoke.sh" },
-          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/switch-project-detect.sh" }
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/switch-project-detect.sh" },
+          { "type": "command", "command": "bash $HOME/.claude/hooks/enforcement/new-project-detect.sh" }
         ]
       }
     ],

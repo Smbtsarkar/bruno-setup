@@ -4,11 +4,12 @@ Lookup table for which actor owns each step in Bruno's pipeline.
 
 | Action                                            | Owner                                                       |
 | ------------------------------------------------- | ----------------------------------------------------------- |
-| Gather requirements from the operator             | Main agent (`requirements.md`)                              |
+| Gather requirements from the operator             | `interviewer` (Haiku, brief-first turn-by-turn Q&A)         |
 | Explore an unfamiliar codebase                    | System `Explore` agent (capital E)                          |
-| Write `docs/REQUIREMENTS.md`                      | Main agent (`requirements.md`)                              |
-| Write `docs/DESIGN.md`                            | Main agent (`design.md`)                                    |
-| Write `docs/PLAN.md`                              | Main agent (`plan.md`)                                      |
+| Write `docs/REQUIREMENTS.md`                      | `interviewer` (incremental, section by section)             |
+| Approve `docs/REQUIREMENTS.md`                    | Operator (gate before DESIGN/PLAN authoring)                |
+| Write `docs/DESIGN.md`                            | Main agent (`design.md`, after operator approves REQUIREMENTS) |
+| Write `docs/PLAN.md`                              | Main agent (`plan.md`, after operator approves REQUIREMENTS) |
 | Scaffold a new project from a stack template      | `scaffolder`                                                |
 | Extract PR brief from PLAN.md                     | Main agent                                                  |
 | Decide which files a PR touches                   | Main agent (from PLAN.md)                                   |

@@ -1,6 +1,21 @@
 # `/new-project` bootstrap
 
-How Bruno bootstraps a fresh project. The full pipeline (interview → design → plan → scaffold → code → review → docs → PR → merge) is documented in `pipeline.md`; this doc covers the **GitHub-repo bootstrap** that happens at the very start.
+How Bruno bootstraps a fresh project. The full pipeline (interviewer → design → plan → scaffold → code → review → docs → PR → merge) is documented in `pipeline.md`; this doc covers the **GitHub-repo bootstrap** and **interviewer invocation** that happen at the very start.
+
+---
+
+## Order of operations
+
+1. **Validate the target.** Compute `~/workspace-bruno/<name>/` (or `$CLAUDE_WORKSPACE_ROOT/<name>/` if overridden). If the directory exists and is non-empty, stop and ask the operator how to proceed.
+2. **Confirm with the operator.** Show the target path + any warnings; ask "Confirm? [y/n]".
+3. **Create the directory + init git** (see GitHub repo bootstrap below).
+4. **Invoke the `interviewer` subagent** with `mode: fresh`, `project_path: <target>/`. Interviewer's first turn asks the operator for a brief, then runs turn-by-turn Q&A, writing `docs/REQUIREMENTS.md` incrementally.
+5. **Approval gate.** When the Interviewer returns, quote `summary_for_operator` verbatim, list `sections_tbd`, and ask the operator: "Approve REQUIREMENTS.md and proceed to DESIGN/PLAN? Or revise specific sections?"
+6. **On approve:** main agent authors `docs/DESIGN.md` (only if external integrations were declared in REQUIREMENTS §3) and `docs/PLAN.md`.
+7. **On revise:** re-invoke Interviewer with a delta brief naming the specific sections to redo.
+8. **Only after the operator approves all three docs** (REQUIREMENTS, DESIGN where applicable, PLAN) → invoke `scaffolder` for the initial scaffold commit.
+
+Don't author DESIGN.md or PLAN.md before the operator approves REQUIREMENTS.md. Don't invoke `scaffolder` before the operator approves all three docs. The approval gates are load-bearing.
 
 ---
 

@@ -11,7 +11,7 @@ This repository is the **canonical source** for the Bruno agent framework's `~/.
 | `framework/CLAUDE.md` | `~/.claude/CLAUDE.md` | Master Bruno rules (the Chief Engineer persona) |
 | `framework/settings.json` | `~/.claude/settings.json` | Permissions, hooks config, thinking levels |
 | `framework/agents/*.md` | `~/.claude/agents/` | Six subagent definitions (coder, reviewer, senior-reviewer, debugger, docs, scaffolder) |
-| `framework/docs/*.md` | `~/.claude/docs/` | Playbooks (requirements, plan, design, interview-checklist, execution-policy, canonical-references) |
+| `framework/docs/*.md` | `~/.claude/docs/` | Playbooks + reference docs (requirements, plan, design, pipeline, subagent-contracts, escalation, pr-template, who-does-what, testing-patterns, install-walkthrough, deployment-gate, workspace, new-project, execution-policy, canonical-references) |
 | `framework/templates/*` | `~/.claude/templates/` | `project-CLAUDE.md` + `_settings/` for scaffolder |
 | `framework/hooks/**/*.sh` | `~/.claude/hooks/` | System-prompt, enforcement, and audit hooks |
 | `scripts/sync.sh` | (runs locally) | rsync framework/ to ~/.claude/ |

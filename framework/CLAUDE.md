@@ -27,9 +27,9 @@ Per-project `CLAUDE.md` files extend these — they never override the safety ru
 
 - Before any non-trivial change, produce a plan and get explicit approval before writing code. "Non-trivial" = anything beyond a one-line fix, a typo, or a formatting change.
 - **Every project must have three living docs** before any non-trivial PR lands:
-  - **`docs/REQUIREMENTS.md`** — what the project is, the operator-facing flows, the spec surface. Playbook: `~/.claude/docs/requirements.md`.
-  - **`docs/DESIGN.md`** — lifecycles of external integrations, sequence-of-events for load-bearing flows, source-of-truth declarations, error/recovery contracts. **REQUIRED if the project integrates any external system.** Template: `~/.claude/docs/design.md`.
-  - **`docs/PLAN.md`** — PR-gated work with tests. Playbook: `~/.claude/docs/plan.md`.
+  - **`docs/REQUIREMENTS.md`** — what the project is, the operator-facing flows, the spec surface. Produced by the `interviewer` subagent (brief-first, turn-by-turn Q&A); main agent surfaces it for operator approval before any DESIGN/PLAN work. Playbook: `~/.claude/docs/requirements.md`.
+  - **`docs/DESIGN.md`** — lifecycles of external integrations, sequence-of-events for load-bearing flows, source-of-truth declarations, error/recovery contracts. **REQUIRED if the project integrates any external system.** Authored by main agent after operator approves REQUIREMENTS.md. Template: `~/.claude/docs/design.md`.
+  - **`docs/PLAN.md`** — PR-gated work with tests. Authored by main agent after REQUIREMENTS (and DESIGN if applicable) are approved. Playbook: `~/.claude/docs/plan.md`.
 - For ad-hoc work, post the plan inline and wait for approval. "Just do it" / "go ahead" counts as approval.
 - **Verify upstream docs before planning.** Never write from memory. Before writing REQUIREMENTS / DESIGN / PLAN for any project, fetch and verify the official upstream docs for every declared external integration (claude-agent-sdk, Notion, Discord, OAuth providers, MCP servers, etc.); cite the version verified in DESIGN.md §Lifecycles. If authoritative docs cannot be found for an integration, **surface to the operator before writing PLAN.md or DESIGN.md** — do not guess. Canonical reference list: `~/.claude/docs/canonical-references.md`.
 
@@ -62,10 +62,11 @@ All commits use [Conventional Commits](https://www.conventionalcommits.org/): `<
 
 ## 6. Agent orchestration
 
-Specialized subagents handle distinct phases; main agent **auto-invokes** them based on context. Requirements gathering and planning are **main-agent work** — no `interviewer` or `planner` subagent exists.
+Specialized subagents handle distinct phases; main agent **auto-invokes** them based on context. Requirements gathering is delegated to `interviewer` (Haiku); DESIGN and PLAN authoring stay on main agent.
 
 The subagent roster, pipeline diagrams, pre-flight checks, sync gate, debugger auto-invoke detail, senior-reviewer trigger detail, and release-cut pipeline all live in `~/.claude/docs/pipeline.md`. Read that doc when you need the full flow; the cheat-sheet:
 
+- `interviewer` (Haiku) runs requirements interviews — brief-first, turn-by-turn, one focused question per turn, writes `docs/REQUIREMENTS.md` incrementally. Auto-invoke on `/new-project`, `!new-project`, or when REQUIREMENTS.md is missing/stale. **For existing-project flows, ask the operator first: focused-update or full re-interview?** Then surface its REQUIREMENTS.md + TBD list to the operator for approval BEFORE authoring DESIGN.md or PLAN.md.
 - `coder` implements PLAN.md phases. After it returns, **relay its `summary_for_operator` verbatim to the operator before invoking reviewer** (sync gate).
 - `reviewer` reviews + runs gates + opens the PR (per-phase quick, pre-PR comprehensive incl. e2e + adjacent-surface scan).
 - `senior-reviewer` is the release gate. Auto-invoke it not only at `dev` → `master` cut time, but **before any feature/PR is presented to the operator for manual verification.** First deliverable is an explicit checklist grounded in REQUIREMENTS / DESIGN / PLAN.

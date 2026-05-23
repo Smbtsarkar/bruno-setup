@@ -38,6 +38,16 @@ if [[ "$RESOLVED" == "$WORKSPACE_RESOLVED" || "$RESOLVED" == "$WORKSPACE_RESOLVE
     exit 0
 fi
 
+# Allow writes to Claude Code plan-mode storage and Bruno memory storage.
+# These ~/.claude/ subpaths are managed by the harness; the rest of ~/.claude/
+# stays protected by the explicit deny rules in settings.json.
+if [[ "$RESOLVED" == "$HOME/.claude/plans" || "$RESOLVED" == "$HOME/.claude/plans/"* ]]; then
+    exit 0
+fi
+if [[ "$RESOLVED" == "$HOME/.claude/projects" || "$RESOLVED" == "$HOME/.claude/projects/"* ]]; then
+    exit 0
+fi
+
 # Block writes outside
 echo "workspace-write-block.sh BLOCKED the write:" >&2
 echo "" >&2
